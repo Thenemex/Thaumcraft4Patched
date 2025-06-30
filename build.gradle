@@ -1,0 +1,95 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+            changing = true
+        }
+    }
+}
+
+apply plugin: 'forge'
+apply plugin: 'java'
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+version = '1.0'
+/* A.B.C.D
+    A = Major version
+    B = Adding content or researches/recipes
+    C = Recipes tweaks or edits
+    D = Bug patches
+    E = Forgotten things/typos
+*/
+group = "com.thenemex.thaumcraft4patched" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "Thaumcraft4Patched"
+
+// +SETTINGS
+def domain = 'com.thenemex.thaumcraft4patched' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+def modid = 'modid'
+def mcversion = '1.7.10'
+// -SETTINGS
+
+group = "${domain}.${modid}"
+archivesBaseName = "[${mcversion}] Thaumcraft4Patched" // add Minecraft version to jar for better user friendliness
+
+minecraft {
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "eclipse"
+}
+
+dependencies {
+    compile files('libs/Thaumcraft-1.7.10-4.2.3.5.jar')
+    // compile files('libs/Baubles-1.7.10-1.0.1.10.jar')
+}
+
+apply plugin: 'idea'
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+subprojects {
+    apply plugin: 'idea'
+}
+
+task prepareAssets(type: Copy) {
+    group = 'build'
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':mcversion
+    }
+    from project.file('src/main/resources')
+    into project.file('build/classes/java/main')
+}
+
+classes.dependsOn(prepareAssets)
+
+// replace values in mcmod.info before packing in jar
+processResources {
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':mcversion
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
