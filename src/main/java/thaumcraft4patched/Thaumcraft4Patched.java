@@ -5,6 +5,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import thaumcraft4patched.config.Config;
+import thaumcraft4patched.model.config.ConfigBugPatches;
 
 import java.io.File;
 
@@ -15,7 +16,7 @@ import static thaumcraft4patched.Thaumcraft4Patched.modID;
 @Mod(modid = modID, useMetadata = true, dependencies = dependencies)
 public class Thaumcraft4Patched {
 
-    public static final String modID = "Thaumcraft4Patched", modName = "Thaumcraft4Patched";
+    public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched";
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -26,7 +27,9 @@ public class Thaumcraft4Patched {
     public void init(FMLInitializationEvent ignoredEvent) {}
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent ignoredEvent) {}
+    public void postInit(FMLPostInitializationEvent ignoredEvent) {
+        ConfigBugPatches.init();
+    }
 
     public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,)";
 }

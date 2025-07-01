@@ -25,7 +25,7 @@ public class Config {
     private static void loadConfig() {
         String bugsCat = "Bug-Patches";
         config.addCustomCategoryComment(bugsCat, "You can disable/enable bug patches from the mod here.");
-        boneBowResearchPatchEnabled = newEntry(bugsCat,"BoneBowResearchPatch");
+        boneBowResearchPatchEnabled = newEntry(bugsCat,"HiddenBoneBowResearch");
     }
 
     public static boolean newEntry(String tag, String key) {
