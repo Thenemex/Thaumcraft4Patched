@@ -20,6 +20,7 @@ public class ConfigBugPatches {
             Field field = research.getClass().getDeclaredField("isHidden");
             field.setAccessible(true);
             field.set(research, false);
+            field.setAccessible(false);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             Logger.logError("Cannot patch the Bone Bow bug / " + e.getClass().getSimpleName() + " : " + e.getLocalizedMessage());
         }
