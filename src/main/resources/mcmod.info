@@ -1,0 +1,16 @@
+[
+    {
+        "modid": "TC4Patched",
+        "name": "Thaumcraft 4 : Patched",
+        "description": "Addon for Thaumcraft 4. Patch some bugs native to the mod.",
+        "version": ${version},
+        "mcversion": ${mcversion},
+        "url": "",
+        "updateUrl": "",
+        "authorList": ["Thenemex"],
+        "credits": "Thanks for Azanor for making Thaumcraft",
+        "logoFile": "",
+        "screenshots": [],
+        "dependencies": ["thaumcraft"]
+    }
+]
