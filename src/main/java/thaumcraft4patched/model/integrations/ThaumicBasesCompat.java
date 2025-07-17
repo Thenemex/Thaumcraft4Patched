@@ -18,9 +18,12 @@ public class ThaumicBasesCompat extends ACompat {
     }
 
     protected void addMissingPrereqForThaumiumBracelet() {
+        String newParentsHidden = "THAUMIUM";
         ResearchItem research = API.getResearch("THAUMICBASES", "TB.Bracelet.Thaumium");
-        String[] parentsHidden = deepCopyTabAndAdd(research.parentsHidden, "THAUMIUM");
-        research.setParentsHidden(parentsHidden);
+        if (research.parentsHidden == null)
+            research.setParentsHidden(newParentsHidden);
+        else
+            research.setParentsHidden(deepCopyTabAndAdd(research.parentsHidden, newParentsHidden));
     }
 
     private String[] deepCopyTabAndAdd(String[] tab, String ... newElements) {
