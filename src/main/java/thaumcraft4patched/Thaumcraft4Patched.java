@@ -32,7 +32,7 @@ public class Thaumcraft4Patched {
         // Loading Integrations
         ConfigIntegrations.init();
         // Loading main patches
-        ConfigBugPatches.init();
+        if (Config.tc4Enabled) ConfigBugPatches.init();
     }
 
     public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,)";
