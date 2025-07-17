@@ -6,6 +6,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import thaumcraft4patched.config.Config;
 import thaumcraft4patched.model.config.ConfigBugPatches;
+import thaumcraft4patched.model.config.ConfigIntegrations;
 
 import java.io.File;
 
@@ -28,6 +29,9 @@ public class Thaumcraft4Patched {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent ignoredEvent) {
+        // Loading Integrations
+        ConfigIntegrations.init();
+        // Loading main patches
         ConfigBugPatches.init();
     }
 
