@@ -35,5 +35,5 @@ public class Thaumcraft4Patched {
         if (Config.tc4Enabled) ConfigBugPatches.init();
     }
 
-    public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,)";
+    public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,)after:thaumicbases";
 }
