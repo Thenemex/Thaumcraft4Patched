@@ -1,6 +1,8 @@
 package thaumcraft4patched.api.integrations;
 
 import cpw.mods.fml.common.Loader;
+import thaumcraft.api.research.ResearchItem;
+import thaumcraft4patched.api.thaumcraft.API;
 import thaumcraft4patched.api.util.Logger;
 import thaumcraft4patched.api.util.exceptions.ParameterIsNullOrEmpty;
 
@@ -23,8 +25,20 @@ public abstract class ACompat {
 
     public abstract void loadIntegration();
 
-    public static boolean modIsLoaded(String mod, boolean config) {
-        return Loader.isModLoaded(mod) && config;
+    protected void addHiddenPrereq(String tab, String tag, String ... hiddenPrereqs) {
+        if (hiddenPrereqs == null || hiddenPrereqs.length == 0) throw new ParameterIsNullOrEmpty();
+        ResearchItem research = API.getResearch(tab, tag);
+        if (research.parentsHidden == null)
+            research.setParentsHidden(hiddenPrereqs);
+        else
+            research.setParentsHidden(deepCopyTabAndAdd(research.parentsHidden, hiddenPrereqs));
+    }
+    private String[] deepCopyTabAndAdd(String[] tab, String ... newElements) {
+        if (tab == null) throw new ParameterIsNullOrEmpty();
+        String[] deepCopy = new String[tab.length + newElements.length];
+        System.arraycopy(tab, 0, deepCopy, 0, tab.length);
+        System.arraycopy(newElements, 0, deepCopy, deepCopy.length - newElements.length - 1, newElements.length);
+        return deepCopy;
     }
 
     @Override
@@ -41,5 +55,9 @@ public abstract class ACompat {
     @Override
     public int hashCode() {
         return Objects.hashCode(mod);
+    }
+
+    public static boolean modIsLoaded(String mod, boolean config) {
+        return Loader.isModLoaded(mod) && config;
     }
 }
