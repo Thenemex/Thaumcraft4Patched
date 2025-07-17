@@ -21,7 +21,7 @@ public abstract class ACompat {
         loadIntegration();
     }
 
-    public void loadIntegration() {}
+    public abstract void loadIntegration();
 
     public static boolean modIsLoaded(String mod, boolean config) {
         return Loader.isModLoaded(mod) && config;
