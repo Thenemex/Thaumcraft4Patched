@@ -15,11 +15,30 @@ public class ThaumicBasesCompat extends ACompat {
     @Override
     public void loadIntegration() {
         if (Config.missingPrereqs_ThaumiumBracelet) addMissingPrereqForThaumiumBracelet();
+        if (Config.missingPrereqs_VoidBracelet) addMissingPrereqForVoidBracelet();
+        if (Config.missingPrereqs_VoidWandCore) addMissingPrereqsForVoidWandCore();
     }
 
     protected void addMissingPrereqForThaumiumBracelet() {
-        String newParentsHidden = "THAUMIUM";
-        ResearchItem research = API.getResearch("THAUMICBASES", "TB.Bracelet.Thaumium");
+        String newParentsHidden = "THAUMIUM"; // Thaumium
+        ResearchItem research = API.getResearch("THAUMICBASES", "TB.Bracelet.Thaumium"); // Thaumium Bracelet
+        if (research.parentsHidden == null)
+            research.setParentsHidden(newParentsHidden);
+        else
+            research.setParentsHidden(deepCopyTabAndAdd(research.parentsHidden, newParentsHidden));
+    }
+    protected void addMissingPrereqForVoidBracelet() {
+        // Charged Thaumium Cap, Voidmetal, Salis Mundus Block, Void Wand Core
+        String[] newParentsHidden = new String[]{"CAP_thaumium", "VOIDMETAL", "TB.SMB", "ROD_tbvoid", "TB.CrystalBlocks"};
+        ResearchItem research = API.getResearch("THAUMICBASES", "TB.Bracelet.Void"); // Void Bracelet
+        if (research.parentsHidden == null)
+            research.setParentsHidden(newParentsHidden);
+        else
+            research.setParentsHidden(deepCopyTabAndAdd(research.parentsHidden, newParentsHidden));
+    }
+    protected void addMissingPrereqsForVoidWandCore() {
+        String newParentsHidden = "TB.SMB"; // Salis Mundus Block
+        ResearchItem research = API.getResearch("THAUMICBASES", "ROD_tbvoid"); // Void Bracelet
         if (research.parentsHidden == null)
             research.setParentsHidden(newParentsHidden);
         else
