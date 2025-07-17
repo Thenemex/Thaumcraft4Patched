@@ -8,6 +8,7 @@ import thaumcraft4patched.api.util.exceptions.ParameterIsNullOrEmpty;
 
 import java.util.Objects;
 
+@SuppressWarnings("SameParameterValue")
 public abstract class ACompat {
 
     protected final String mod;

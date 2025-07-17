@@ -13,7 +13,7 @@ import java.io.File;
 import static thaumcraft4patched.Thaumcraft4Patched.dependencies;
 import static thaumcraft4patched.Thaumcraft4Patched.modID;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "EmptyMethod"})
 @Mod(modid = modID, useMetadata = true, dependencies = dependencies)
 public class Thaumcraft4Patched {
 
