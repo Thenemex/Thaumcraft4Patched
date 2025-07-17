@@ -6,6 +6,7 @@ import java.io.File;
 
 import static thaumcraft4patched.Thaumcraft4Patched.modName;
 
+@SuppressWarnings("unused")
 public class Config {
 
     private static Configuration config;
@@ -25,7 +26,7 @@ public class Config {
     private static void loadConfig() {
         String bugsCat = "Bug-Patches";
         config.addCustomCategoryComment(bugsCat, "You can disable/enable bug patches from the mod here.");
-        boneBowResearchPatchEnabled = newEntry(bugsCat,"HiddenBoneBowResearch");
+        boneBowResearchPatchEnabled = newEntry(bugsCat,"HiddenBoneBowResearch", "Remove the hidden property of the research -> it will be unlocked at spawning.");
     }
 
     public static boolean newEntry(String tag, String key) {
@@ -33,5 +34,11 @@ public class Config {
     }
     public static boolean newEntry(String tag, String key, boolean enabled) {
         return config.get(tag, key, enabled).getBoolean(enabled);
+    }
+    public static boolean newEntry(String tag, String key, String comment) {
+        return newEntry(tag,key, true, comment);
+    }
+    public static boolean newEntry(String tag, String key, boolean enabled, String comment) {
+        return config.get(tag, key, enabled, comment).getBoolean(enabled);
     }
 }
