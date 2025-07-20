@@ -1,9 +1,8 @@
 package thaumcraft4patched.model.config;
 
+import cpw.mods.fml.common.Loader;
 import thaumcraft4patched.config.Config;
 import thaumcraft4patched.model.integrations.ThaumicBasesCompat;
-
-import static thaumcraft4patched.api.integrations.ACompat.modIsLoaded;
 
 public class ConfigIntegrations {
 
@@ -12,5 +11,9 @@ public class ConfigIntegrations {
     public static void init() {
         if (modIsLoaded(tb, Config.tbEnabled))
             new ThaumicBasesCompat(tb);
+    }
+
+    public static boolean modIsLoaded(String mod, boolean config) {
+        return Loader.isModLoaded(mod) && config;
     }
 }

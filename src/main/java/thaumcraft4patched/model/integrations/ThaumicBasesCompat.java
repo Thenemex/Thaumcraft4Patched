@@ -1,6 +1,7 @@
 package thaumcraft4patched.model.integrations;
 
-import thaumcraft4patched.api.integrations.ACompat;
+import nemexlib.api.integrations.ACompat;
+import nemexlib.api.thaumcraft.API;
 import thaumcraft4patched.config.Config;
 
 public class ThaumicBasesCompat extends ACompat {
@@ -18,14 +19,14 @@ public class ThaumicBasesCompat extends ACompat {
 
     public void addMissingPrereqForThaumiumBracelet() {
         // Thaumium
-        addHiddenPrereq("THAUMICBASES", "TB.Bracelet.Thaumium", "THAUMIUM");
+        API.addParents("THAUMICBASES", "TB.Bracelet.Thaumium", true, "THAUMIUM");
     }
     public void addMissingPrereqForVoidBracelet() {
         // Charged Thaumium Cap, Voidmetal, Salis Mundus Block, Void Wand Core
-        addHiddenPrereq("THAUMICBASES", "TB.Bracelet.Void", "CAP_thaumium", "VOIDMETAL", "TB.SMB", "ROD_tbvoid", "TB.CrystalBlocks");
+        API.addParents("THAUMICBASES", "TB.Bracelet.Void", true, "CAP_thaumium", "VOIDMETAL", "TB.SMB", "ROD_tbvoid", "TB.CrystalBlocks");
     }
     public void addMissingPrereqsForVoidWandCore() {
         // Salis Mundus Block
-        addHiddenPrereq("THAUMICBASES", "ROD_tbvoid", "TB.SMB");
+        API.addParents("THAUMICBASES", "ROD_tbvoid", true, "TB.SMB");
     }
 }
