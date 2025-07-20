@@ -11,6 +11,6 @@
         "credits": "Thanks for Azanor for making Thaumcraft",
         "logoFile": "",
         "screenshots": [],
-        "dependencies": ["thaumcraft"]
+        "dependencies": ["Thaumcraft, NemexLib"]
     }
 ]
