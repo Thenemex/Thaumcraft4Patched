@@ -9,6 +9,7 @@ public class Config extends AConfig {
 
     public static boolean tc4Enabled, boneBowResearchPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
+    public static boolean wgEnabled;
 
     public Config(FMLPreInitializationEvent event, String version) {
         super(event, modName, modName, version);
@@ -19,6 +20,7 @@ public class Config extends AConfig {
         config.addCustomCategoryComment(mods, "You can turn off bug-patches for whole mods here");
         tc4Enabled = newEntry(mods, "Thaumcraft 4");
         tbEnabled = newEntry(mods, "Thaumic Bases");
+        wgEnabled = newEntry(mods, "Witching Gadgets");
         config.addCustomCategoryComment(tc4, "You can disable/enable bug patches from Thaumcraft 4 here");
         boneBowResearchPatchEnabled = newEntry(tc4,"HiddenBoneBowResearch", "Removes the hidden property of the research -> it will be unlocked when the player discover the Telum aspect");
         config.addCustomCategoryComment(tb, "You can disable/enable bug patches from Thaumic Bases addon here");

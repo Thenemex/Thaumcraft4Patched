@@ -14,10 +14,10 @@ import static thaumcraft4patched.Thaumcraft4Patched.dependencies;
 import static thaumcraft4patched.Thaumcraft4Patched.modID;
 
 @SuppressWarnings({"unused", "EmptyMethod"})
-@Mod(modid = modID, useMetadata = true, version = "1.2", dependencies = dependencies)
+@Mod(modid = modID, useMetadata = true, version = "1.3", dependencies = dependencies)
 public class Thaumcraft4Patched {
 
-    public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched", configVersion = "1.0";
+    public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched", configVersion = "1.1";
     public static AConfig config;
     public static final Logger logger = new Logger(modID);
 
