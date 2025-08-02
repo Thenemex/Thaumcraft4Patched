@@ -16,7 +16,8 @@ public class WitchingGadgetsCompat extends ACompat {
     }
 
     public void addMissingPrereqForWitchingWearables() {
-        // Infusion, Primal Arrows
-        API.addParents("WITCHGADG", "WGBAUBLES", true, "INFUSION", "PRIMALARROW");
+        // Thaumium, Infusion, Primal Arrows
+        API.addParents("WITCHGADG", "WGBAUBLES", false, (String) null);
+        API.addParents("WITCHGADG", "WGBAUBLES", true, "THAUMIUM", "INFUSION", "PRIMALARROW");
     }
 }
