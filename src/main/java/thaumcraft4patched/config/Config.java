@@ -10,16 +10,18 @@ public class Config extends AConfig {
     public static boolean tc4Enabled, boneBowResearchPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
+    public static boolean txEnabled, removeNecroInfusionRecipe;
 
     public Config(FMLPreInitializationEvent event, String version) {
         super(event, modName, modName, version);
     }
 
     protected void loadConfig() {
-        String mods = "Mods", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases", wg = "Witching-Gadgets";
+        String mods = "Mods", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases", tx = "Thaumic-Exploration", wg = "Witching-Gadgets";
         config.addCustomCategoryComment(mods, "You can turn off bug-patches for whole mods here");
         tc4Enabled = newEntry(mods, "Thaumcraft 4");
         tbEnabled = newEntry(mods, "Thaumic Bases");
+        txEnabled = newEntry(mods, "Thaumic Exploration");
         wgEnabled = newEntry(mods, "Witching Gadgets");
         config.addCustomCategoryComment(tc4, "You can disable/enable bug patches for Thaumcraft 4 here");
         boneBowResearchPatchEnabled = newEntry(tc4,"HiddenBoneBowResearch", "Removes the hidden property of the research -> it will be unlocked when the player discover the Telum aspect");
@@ -27,6 +29,8 @@ public class Config extends AConfig {
         missingPrereqs_ThaumiumBracelet = newEntry(tb,"MissingPrereqs_ThaumiumBracelet", "Adds the missing prereq(s) for the \"Thaumium Bracelet\" research");
         missingPrereqs_VoidBracelet = newEntry(tb,"MissingPrereqs_VoidBracelet", "Adds the missing prereq(s) for the \"Void Bracelet\" research");
         missingPrereqs_VoidWandCore = newEntry(tb, "MissingPrereqs_VoidWandCore", "Adds the missing prereq(s) for the \"Void Wand Core\" research");
+        config.addCustomCategoryComment(tx, "Thaumic Exploration");
+        removeNecroInfusionRecipe = newEntry(tx, "RemoveNecroInfusionRecipe", "\"Remove the buggy non-existant infusion recipe for the \"NecroAltar\"");
         config.addCustomCategoryComment(wg, "You can disable/enable bug patches for Witching Gadgets addon here");
         missingPrereqs_WitchingWearables = newEntry(wg, "MissingPrereqs_WitchingWearables", "Adds the missing prereq(s) for the \"Witching Wearables\" research");
     }
