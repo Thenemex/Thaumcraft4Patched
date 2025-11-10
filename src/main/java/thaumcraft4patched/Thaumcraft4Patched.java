@@ -34,7 +34,8 @@ public class Thaumcraft4Patched {
         // Loading Integrations
         ConfigIntegrations.init();
         // Loading main patches
-        if (Config.tc4Enabled) ConfigBugPatches.init();
+        if (Config.tc4Enabled) ConfigBugPatches.initTC4();
+        if (Config.txEnabled) ConfigBugPatches.initTX();
     }
 
     public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,);required-after:NemexLib@[1.0.0.2,);after:thaumicbases;after:WitchingGadgets;after:ThaumicExploration";

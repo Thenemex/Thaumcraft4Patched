@@ -30,7 +30,7 @@ public class Config extends AConfig {
         missingPrereqs_VoidBracelet = newEntry(tb,"MissingPrereqs_VoidBracelet", "Adds the missing prereq(s) for the \"Void Bracelet\" research");
         missingPrereqs_VoidWandCore = newEntry(tb, "MissingPrereqs_VoidWandCore", "Adds the missing prereq(s) for the \"Void Wand Core\" research");
         config.addCustomCategoryComment(tx, "Thaumic Exploration");
-        removeNecroInfusionRecipe = newEntry(tx, "RemoveNecroInfusionRecipe", "\"Remove the buggy non-existant infusion recipe for the \"NecroAltar\"");
+        removeNecroInfusionRecipe = newEntry(tx, "RemoveNecroInfusionRecipe", "\"Remove the buggy infusion recipe for the \"NecroAltar\" with unregistered/null output itemAlter");
         config.addCustomCategoryComment(wg, "You can disable/enable bug patches for Witching Gadgets addon here");
         missingPrereqs_WitchingWearables = newEntry(wg, "MissingPrereqs_WitchingWearables", "Adds the missing prereq(s) for the \"Witching Wearables\" research");
     }
