@@ -14,10 +14,10 @@ import static thaumcraft4patched.Thaumcraft4Patched.dependencies;
 import static thaumcraft4patched.Thaumcraft4Patched.modID;
 
 @SuppressWarnings({"unused", "EmptyMethod"})
-@Mod(modid = modID, useMetadata = true, version = "1.3", dependencies = dependencies)
+@Mod(modid = modID, useMetadata = true, version = "1.4", dependencies = dependencies)
 public class Thaumcraft4Patched {
 
-    public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched", configVersion = "1.1";
+    public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched", configVersion = "1.2";
     public static AConfig config;
     public static final Logger logger = new Logger(modID);
 
@@ -37,5 +37,5 @@ public class Thaumcraft4Patched {
         if (Config.tc4Enabled) ConfigBugPatches.init();
     }
 
-    public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,);required-after:NemexLib@[1.0.0.2,);after:thaumicbases;after:WitchingGadgets";
+    public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,);required-after:NemexLib@[1.0.0.2,);after:thaumicbases;after:WitchingGadgets;after:ThaumicExploration";
 }
