@@ -15,6 +15,7 @@ import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.entities.golems.EntityGolemBase;
 import thaumcraft4patched.model.rewrite.golem.PatchedItemGolemPlacer;
 import thaumcraft4patched.model.rewrite.golem.entity.PatchedEntityGolemBase;
+import thaumcraft4patched.utils.exceptions.BugPatchIsIncomplete;
 
 import java.lang.reflect.Field;
 
@@ -84,10 +85,12 @@ public class ConfigBugPatches {
         stringToClassMapping.put(entityModName, PatchedEntityGolemBase.class);
         if (stringToClassMapping.containsKey(entityModName) && !stringToClassMapping.containsValue(EntityGolemBase.class) && stringToClassMapping.containsValue(PatchedEntityGolemBase.class)) cpt++;
 
-        logger.info("Golem-Lumber hardness bug : " + cpt + "/4 class switches applied.");
-
         // Item Registries switch
         ConfigItems.itemGolemPlacer = (new PatchedItemGolemPlacer().setUnlocalizedName("ItemGolemPlacer"));
+        if (ConfigItems.itemGolemPlacer instanceof PatchedItemGolemPlacer) cpt++;
+
+        if (cpt != 5) throw new BugPatchIsIncomplete("GolemLumberWoodHardness", cpt, 5);
+        else logger.info("Successfully patch bug for Golem Lumber Wood Hardness !");
     }
 
     protected static void removeNecroInfusionRecipe() {
