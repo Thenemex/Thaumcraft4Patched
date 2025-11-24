@@ -17,13 +17,13 @@ import static thaumcraft4patched.Thaumcraft4Patched.modID;
 @Mod(modid = modID, useMetadata = true, version = "1.4", dependencies = dependencies)
 public class Thaumcraft4Patched {
 
-    public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched", configVersion = "1.2";
+    public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched";
     public static AConfig config;
     public static final Logger logger = new Logger(modID);
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        config = new Config(event, configVersion).init(); // Init config // Custom folder with mod name
+        config = new Config(event).init(); // Init config // Custom folder with mod name
     }
 
     @Mod.EventHandler

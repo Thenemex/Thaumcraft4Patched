@@ -7,13 +7,13 @@ import static thaumcraft4patched.Thaumcraft4Patched.modName;
 
 public class Config extends AConfig {
 
-    public static boolean tc4Enabled, boneBowResearchPatchEnabled;
+    public static boolean tc4Enabled, boneBowResearchPatchEnabled, golemLumberCoreWoodHardnessPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
     public static boolean txEnabled, removeNecroInfusionRecipe;
 
-    public Config(FMLPreInitializationEvent event, String version) {
-        super(event, modName, modName, version);
+    public Config(FMLPreInitializationEvent event) {
+        super(event, modName, modName, "1.3");
     }
 
     protected void loadConfig() {
@@ -25,6 +25,7 @@ public class Config extends AConfig {
         wgEnabled = newEntry(mods, "Witching Gadgets");
         config.addCustomCategoryComment(tc4, "You can disable/enable bug patches for Thaumcraft 4 here");
         boneBowResearchPatchEnabled = newEntry(tc4,"HiddenBoneBowResearch", "Removes the hidden property of the research -> it will be unlocked when the player discover the Telum aspect");
+        golemLumberCoreWoodHardnessPatchEnabled = newEntry(tc4, "GolemLumberBlockHardness", "This patches the issue when Golem with Lumber core cannot drop wood blocks that are too hard to be broken by hand (compatible with HLC)");
         config.addCustomCategoryComment(tb, "You can disable/enable bug patches for Thaumic Bases addon here");
         missingPrereqs_ThaumiumBracelet = newEntry(tb,"MissingPrereqs_ThaumiumBracelet", "Adds the missing prereq(s) for the \"Thaumium Bracelet\" research");
         missingPrereqs_VoidBracelet = newEntry(tb,"MissingPrereqs_VoidBracelet", "Adds the missing prereq(s) for the \"Void Bracelet\" research");
