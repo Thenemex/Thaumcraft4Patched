@@ -10,10 +10,10 @@ public class Config extends AConfig {
     public static boolean tc4Enabled, boneBowResearchPatchEnabled, golemLumberCoreWoodHardnessPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
-    public static boolean txEnabled, removeNecroInfusionRecipe;
+    public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled, removeNecroInfusionRecipe;
 
     public Config(FMLPreInitializationEvent event) {
-        super(event, modName, modName, "1.3");
+        super(event, modName, modName, "1.4");
     }
 
     protected void loadConfig() {
@@ -31,7 +31,8 @@ public class Config extends AConfig {
         missingPrereqs_VoidBracelet = newEntry(tb,"MissingPrereqs_VoidBracelet", "Adds the missing prereq(s) for the \"Void Bracelet\" research");
         missingPrereqs_VoidWandCore = newEntry(tb, "MissingPrereqs_VoidWandCore", "Adds the missing prereq(s) for the \"Void Wand Core\" research");
         config.addCustomCategoryComment(tx, "Thaumic Exploration");
-        removeNecroInfusionRecipe = newEntry(tx, "RemoveNecroInfusionRecipe", "\"Remove the buggy infusion recipe for the \"NecroAltar\" with unregistered/null output itemAlter");
+        blackFloatingCandleRecipePatchEnabled = newEntry(tx, "BlackFloatingCandle", "This patches the crash caused by trying to craft a Black Floating Candle");
+        removeNecroInfusionRecipe = newEntry(tx, "RemoveNecroInfusionRecipe", "Remove the buggy infusion recipe for the \"NecroAltar\" with unregistered/null output itemAlter");
         config.addCustomCategoryComment(wg, "You can disable/enable bug patches for Witching Gadgets addon here");
         missingPrereqs_WitchingWearables = newEntry(wg, "MissingPrereqs_WitchingWearables", "Adds the missing prereq(s) for the \"Witching Wearables\" research");
     }
