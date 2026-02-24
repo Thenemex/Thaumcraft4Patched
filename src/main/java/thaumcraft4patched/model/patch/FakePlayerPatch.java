@@ -39,7 +39,7 @@ public class FakePlayerPatch implements IPatch {
                 golem = fakePlayers.get(username);
                 golem.inventory.addItemStackToInventory(new ItemStack(ConfigItems.itemAxeThaumium));
                 if (golem.getHeldItem().getItem().equals(ConfigItems.itemAxeThaumium))
-                    logger.info("Successfully patched golemLumberCoreWoodHardness bug");
+                    logger.info("Successfully patched golemLumberCoreWoodHardness bug !");
             } else if (!(fakePlayers.get(username) instanceof FakePlayerGolem))
                 logger.info("Cannot apply FakePlayerGolem patch -> the fake player already exists");
     }
