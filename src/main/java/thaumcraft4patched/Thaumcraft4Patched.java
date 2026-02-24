@@ -14,7 +14,7 @@ import static thaumcraft4patched.Thaumcraft4Patched.dependencies;
 import static thaumcraft4patched.Thaumcraft4Patched.modID;
 
 @SuppressWarnings({"unused", "EmptyMethod"})
-@Mod(modid = modID, useMetadata = true, version = "1.5", dependencies = dependencies)
+@Mod(modid = modID, useMetadata = true, version = "1.6", dependencies = dependencies)
 public class Thaumcraft4Patched {
 
     public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched";
