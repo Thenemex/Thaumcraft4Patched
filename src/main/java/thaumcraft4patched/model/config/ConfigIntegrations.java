@@ -12,7 +12,7 @@ public class ConfigIntegrations {
     public static void init() {
         if (modIsLoaded(tb, Config.tbEnabled))
             new ThaumicBasesCompat(tb);
-        if (modIsLoaded(wg,Config.wgEnabled))
+        if (modIsLoaded(wg, Config.wgEnabled))
             new WitchingGadgetsCompat(wg);
     }
 
