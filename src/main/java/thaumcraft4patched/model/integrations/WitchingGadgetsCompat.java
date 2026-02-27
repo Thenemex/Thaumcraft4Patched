@@ -1,10 +1,14 @@
 package thaumcraft4patched.model.integrations;
 
 import nemexlib.api.integrations.ACompat;
-import nemexlib.api.thaumcraft.API;
+import net.minecraftforge.common.MinecraftForge;
 import thaumcraft4patched.config.Config;
+import thaumcraft4patched.model.patch.IPatch;
+import thaumcraft4patched.model.patch.WitchingGadgetsResearchPatch;
 
 public class WitchingGadgetsCompat extends ACompat {
+
+    public static IPatch wgResearchPatch = null;
 
     public WitchingGadgetsCompat(String mod) {
         super(mod);
@@ -16,8 +20,7 @@ public class WitchingGadgetsCompat extends ACompat {
     }
 
     public void addMissingPrereqForWitchingWearables() {
-        // Thaumium, Infusion, Primal Arrows
-        API.addParents("WITCHGADG", "WGBAUBLES", false, (String) null);
-        API.addParents("WITCHGADG", "WGBAUBLES", true, "THAUMIUM", "INFUSION", "PRIMALARROW");
+        wgResearchPatch = new WitchingGadgetsResearchPatch();
+        MinecraftForge.EVENT_BUS.register(wgResearchPatch);
     }
 }
