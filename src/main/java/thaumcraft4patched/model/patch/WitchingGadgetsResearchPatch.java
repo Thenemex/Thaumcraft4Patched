@@ -11,7 +11,6 @@ public class WitchingGadgetsResearchPatch implements IPatch {
     @SubscribeEvent
     public void apply(WorldEvent.Load event) {
         // Thaumium, Infusion, Primal Arrows
-        API.addParents(tab, tag, false, (String) null);
         API.addParents(tab, tag, true, "THAUMIUM", "INFUSION", "PRIMALARROW");
     }
 }
