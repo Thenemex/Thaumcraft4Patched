@@ -42,5 +42,8 @@ public class FakePlayerPatch implements IPatch {
                     logger.info("Successfully patched golemLumberCoreWoodHardness bug !");
             } else if (!(fakePlayers.get(username) instanceof FakePlayerGolem))
                 logger.info("Cannot apply FakePlayerGolem patch -> the fake player already exists");
+
+
     }
 }
+

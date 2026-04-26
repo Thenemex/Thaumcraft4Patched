@@ -9,23 +9,27 @@ import net.minecraftforge.common.MinecraftForge;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.crafting.ShapelessArcaneRecipe;
+import thaumcraft.api.research.ResearchCategoryList;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.common.config.ConfigItems;
+import thaumcraft4patched.model.patch.NullParentsPatch;
 import thaumcraft4patched.model.patch.FakePlayerPatch;
 import thaumcraft4patched.model.patch.IPatch;
 
 import static thaumcraft.api.aspects.Aspect.AIR;
 import static thaumcraft.api.aspects.Aspect.WEAPON;
+import static thaumcraft.api.research.ResearchCategories.researchCategories;
 import static thaumcraft4patched.Thaumcraft4Patched.logger;
 import static thaumcraft4patched.config.Config.*;
 
 public class ConfigBugPatches {
 
-    public static IPatch golemLumberCoreWoodHardness = null;
+    public static IPatch golemLumberCoreWoodHardness, nullResearchParentsPatch;
 
     public static void initTC4() {
         if (boneBowResearchPatchEnabled) patchHiddenBoneBowResearch();
         if (golemLumberCoreWoodHardnessPatchEnabled) patchGolemLumberCoreWoodHardness();
+        if (nullResearchParentsPatchEnabled) patchNullResearchParents();
     }
 
     public static void initTX() {
@@ -42,6 +46,25 @@ public class ConfigBugPatches {
     protected static void patchGolemLumberCoreWoodHardness() {
         golemLumberCoreWoodHardness = new FakePlayerPatch();
         MinecraftForge.EVENT_BUS.register(golemLumberCoreWoodHardness);
+    }
+
+    protected static void patchNullResearchParents() {
+        int cpt = 0;
+        for (ResearchCategoryList rl : researchCategories.values())
+            for (ResearchItem ri : rl.research.values()) {
+                if (ri.parents == null) {
+                    ri.parents = new String[0];
+                    cpt++;
+                }
+                if (ri.parentsHidden == null) {
+                    ri.parentsHidden = new String[0];
+                    cpt++;
+                }
+            }
+        logger.info("Patched", cpt, "parents that were Null (loading phase 3)");
+
+        nullResearchParentsPatch = new NullParentsPatch();
+        MinecraftForge.EVENT_BUS.register(nullResearchParentsPatch);
     }
 
     protected static void removeNecroInfusionRecipe() {
