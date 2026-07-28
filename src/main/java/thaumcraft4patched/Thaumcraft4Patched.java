@@ -10,6 +10,10 @@ import thaumcraft4patched.config.Config;
 import thaumcraft4patched.model.config.ConfigBugPatches;
 import thaumcraft4patched.model.config.ConfigIntegrations;
 
+import cpw.mods.fml.common.Loader;
+import net.minecraftforge.common.MinecraftForge;
+import thaumcraft4patched.model.patch.MagicCookiesFogPatch;
+
 import static thaumcraft4patched.Thaumcraft4Patched.dependencies;
 import static thaumcraft4patched.Thaumcraft4Patched.modID;
 
@@ -33,9 +37,17 @@ public class Thaumcraft4Patched {
     public void postInit(FMLPostInitializationEvent ignoredEvent) {
         // Loading Integrations
         ConfigIntegrations.init();
+
         // Loading main patches
         if (Config.tc4Enabled) ConfigBugPatches.initTC4();
         if (Config.txEnabled) ConfigBugPatches.initTX();
+
+
+        // Magic Cookies fog compatibility
+        if (ignoredEvent.getSide().isClient() && Loader.isModLoaded("MagicCookie")) {
+            MinecraftForge.EVENT_BUS.register(new MagicCookiesFogPatch());
+            logger.info("Loaded Magic Cookies fog compatibility patch");
+        }
     }
 
     public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,);required-after:NemexLib@[1.8.1.1,);after:thaumicbases;after:ThaumicExploration";

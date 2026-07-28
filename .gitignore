@@ -1,0 +1,20 @@
+# Local dependency jars — do not upload
+/libs/
+
+# Gradle
+.gradle/
+build/
+
+# ForgeGradle development folders
+eclipse/
+run/
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Other generated files
+out/
+*.log
