@@ -32,12 +32,12 @@ public class ConfigBugPatches {
             if (golemLumberCoreWoodHardnessPatchEnabled) patchGolemLumberCoreWoodHardness();
             if (nullResearchParentsPatchEnabled) patchNullResearchParents();
         }
-        if (isModLoaded(tc4Enabled, "ThaumicExploration")) {
+        if (isModLoaded(txEnabled, "ThaumicExploration")) {
             if (removeNecroInfusionRecipe) removeNecroInfusionRecipe();
             if (blackFloatingCandleRecipePatchEnabled) patchBlackFloatingCandleRecipe();
         }
         if (isModLoaded(mcEnabled, "MagicCookie")) {
-            patchOpaqueFog(post);
+            if (opaqueFogNetherDarkShrineJava25PatchEnabled) patchOpaqueFog(post);
         }
     }
 
