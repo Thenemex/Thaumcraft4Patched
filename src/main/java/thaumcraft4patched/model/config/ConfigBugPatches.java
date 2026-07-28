@@ -1,5 +1,7 @@
 package thaumcraft4patched.model.config;
 
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import nemexlib.api.items.ItemFinder;
 import nemexlib.api.recipes.arcane.ArcaneAdder;
 import nemexlib.api.thaumcraft.API;
@@ -12,9 +14,9 @@ import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 import thaumcraft.api.research.ResearchCategoryList;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.common.config.ConfigItems;
+import thaumcraft4patched.model.patch.MagicCookiesFogPatch;
 import thaumcraft4patched.model.patch.NullParentsPatch;
 import thaumcraft4patched.model.patch.FakePlayerPatch;
-import thaumcraft4patched.model.patch.IPatch;
 
 import static thaumcraft.api.aspects.Aspect.AIR;
 import static thaumcraft.api.aspects.Aspect.WEAPON;
@@ -24,17 +26,19 @@ import static thaumcraft4patched.config.Config.*;
 
 public class ConfigBugPatches {
 
-    public static IPatch golemLumberCoreWoodHardness, nullResearchParentsPatch;
-
-    public static void initTC4() {
-        if (boneBowResearchPatchEnabled) patchHiddenBoneBowResearch();
-        if (golemLumberCoreWoodHardnessPatchEnabled) patchGolemLumberCoreWoodHardness();
-        if (nullResearchParentsPatchEnabled) patchNullResearchParents();
-    }
-
-    public static void initTX() {
-        if (removeNecroInfusionRecipe) removeNecroInfusionRecipe();
-        if (blackFloatingCandleRecipePatchEnabled) patchBlackFloatingCandleRecipe();
+    public static void init(FMLPostInitializationEvent post) {
+        if (tc4Enabled) {
+            if (boneBowResearchPatchEnabled) patchHiddenBoneBowResearch();
+            if (golemLumberCoreWoodHardnessPatchEnabled) patchGolemLumberCoreWoodHardness();
+            if (nullResearchParentsPatchEnabled) patchNullResearchParents();
+        }
+        if (isModLoaded(tc4Enabled, "ThaumicExploration")) {
+            if (removeNecroInfusionRecipe) removeNecroInfusionRecipe();
+            if (blackFloatingCandleRecipePatchEnabled) patchBlackFloatingCandleRecipe();
+        }
+        if (isModLoaded(mcEnabled, "MagicCookie")) {
+            patchOpaqueFog(post);
+        }
     }
 
     protected static void patchHiddenBoneBowResearch() {
@@ -42,12 +46,9 @@ public class ConfigBugPatches {
         research.setItemTriggers(); // Cleared all item triggers
         research.setAspectTriggers(WEAPON);
     }
-
     protected static void patchGolemLumberCoreWoodHardness() {
-        golemLumberCoreWoodHardness = new FakePlayerPatch();
-        MinecraftForge.EVENT_BUS.register(golemLumberCoreWoodHardness);
+        MinecraftForge.EVENT_BUS.register(new FakePlayerPatch());
     }
-
     protected static void patchNullResearchParents() {
         int cpt = 0;
         for (ResearchCategoryList rl : researchCategories.values())
@@ -63,8 +64,7 @@ public class ConfigBugPatches {
             }
         logger.info("Patched", cpt, "parents that were Null (loading phase 3)");
 
-        nullResearchParentsPatch = new NullParentsPatch();
-        MinecraftForge.EVENT_BUS.register(nullResearchParentsPatch);
+        MinecraftForge.EVENT_BUS.register(new NullParentsPatch());
     }
 
     protected static void removeNecroInfusionRecipe() {
@@ -81,7 +81,6 @@ public class ConfigBugPatches {
         } else
             logger.info("Could not remove or find infusion recipe linked to \"NECROINFUSION\" tag ...");
     }
-
     protected static void patchBlackFloatingCandleRecipe() {
         ShapelessArcaneRecipe recipeToRemove = null;
         String researchTag = "FLOATCANDLE";
@@ -107,5 +106,16 @@ public class ConfigBugPatches {
                     blackCandle, blackCandle, blackCandle, ConfigItems.itemShard);
             logger.info("Successfully patched the recipe for Black Floating Candle [TX] !");
         }
+    }
+
+    protected static void patchOpaqueFog(FMLPostInitializationEvent event) {
+        if (event.getSide().isClient()) {
+            MinecraftForge.EVENT_BUS.register(new MagicCookiesFogPatch());
+            logger.info("Successfully loaded opaque fog patch for Magic Cookies !");
+        }
+    }
+
+    public static boolean isModLoaded(boolean entry, String modid) {
+        return entry && Loader.isModLoaded(modid);
     }
 }
