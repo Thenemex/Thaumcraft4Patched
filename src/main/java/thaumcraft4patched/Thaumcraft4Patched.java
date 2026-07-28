@@ -10,15 +10,11 @@ import thaumcraft4patched.config.Config;
 import thaumcraft4patched.model.config.ConfigBugPatches;
 import thaumcraft4patched.model.config.ConfigIntegrations;
 
-import cpw.mods.fml.common.Loader;
-import net.minecraftforge.common.MinecraftForge;
-import thaumcraft4patched.model.patch.MagicCookiesFogPatch;
-
 import static thaumcraft4patched.Thaumcraft4Patched.dependencies;
 import static thaumcraft4patched.Thaumcraft4Patched.modID;
 
 @SuppressWarnings({"unused", "EmptyMethod"})
-@Mod(modid = modID, useMetadata = true, version = "1.7", dependencies = dependencies)
+@Mod(modid = modID, useMetadata = true, version = "1.8", dependencies = dependencies)
 public class Thaumcraft4Patched {
 
     public static final String modID = "TC4Patched", modName = "Thaumcraft4Patched";
@@ -34,21 +30,12 @@ public class Thaumcraft4Patched {
     public void init(FMLInitializationEvent ignoredEvent) {}
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent ignoredEvent) {
+    public void postInit(FMLPostInitializationEvent event) {
         // Loading Integrations
         ConfigIntegrations.init();
-
         // Loading main patches
-        if (Config.tc4Enabled) ConfigBugPatches.initTC4();
-        if (Config.txEnabled) ConfigBugPatches.initTX();
-
-
-        // Magic Cookies fog compatibility
-        if (ignoredEvent.getSide().isClient() && Loader.isModLoaded("MagicCookie")) {
-            MinecraftForge.EVENT_BUS.register(new MagicCookiesFogPatch());
-            logger.info("Loaded Magic Cookies fog compatibility patch");
-        }
+        ConfigBugPatches.init(event);
     }
 
-    public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,);required-after:NemexLib@[1.8.1.1,);after:thaumicbases;after:ThaumicExploration";
+    public static final String dependencies = "required-after:Thaumcraft@[4.2.3.5,);required-after:NemexLib@[1.11.2,);after:thaumicbases;after:ThaumicExploration";
 }
