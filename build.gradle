@@ -15,10 +15,16 @@ buildscript {
 
 apply plugin: 'forge'
 apply plugin: 'java'
+
+dependencies {
+    compile files('libs/[1.7.10] Harvest Level Config-1.0.jar')
+}
+
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
 }
+
 
 version = '1.8'
 /* A.B.C.D
