@@ -22,8 +22,6 @@ public class TCPatchTransformer implements IClassTransformer {
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (!target.equals(transformedName)) return basicClass;
 
-        logger.info("Transforming", transformedName);
-
         ClassNode classNode = new ClassNode();
         new ClassReader(basicClass).accept(classNode, 0);
 
