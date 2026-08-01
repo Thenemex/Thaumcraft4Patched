@@ -31,7 +31,7 @@ public class NullParentsPatch implements IPatch {
                         cpt++;
                     }
                 }
-            logger.info("Patched", cpt, "parents that were Null (world loading)");
+            if (cpt > 0) logger.info("Patched", cpt, "parents that were Null (world loading)");
             isPatched = true;
             cpt = 0;
         }
