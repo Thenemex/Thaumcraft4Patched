@@ -25,8 +25,7 @@ compileJava {
     targetCompatibility = '1.8'
 }
 
-
-version = '1.8'
+version = '1.9'
 /* A.B.C.D
     A = Major version
     B = Adding content or researches/recipes
@@ -88,5 +87,15 @@ processResources {
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'FMLCorePlugin': 'thaumcraft4patched.core.TCPatchCorePlugin',
+                'FMLCorePluginContainsFMLMod': 'true', // If you also got a @Mod
+                'ForceLoadAsMod': 'true'
+        )
     }
 }
