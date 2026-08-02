@@ -23,4 +23,4 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
     - Witching Wearables 
 
 ### Helpers :
-- Huge thanks to [**Setokaiba218**](https://www.curseforge.com/members/setokaiba218/projects) for the opaque screen bug patch for Magic Cookies !
+- Huge thanks to [**Setokaiba218**](https://www.curseforge.com/members/setokaiba218/projects) for the opaque screen bug patch for Magic Cookies and additional compatibility patches!
