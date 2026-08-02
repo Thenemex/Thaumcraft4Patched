@@ -4,9 +4,18 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
 
 ### Patched Bugs :
 - Bone Bow research used to be stuck hidden in some cases -> it will now unlock once the player discover the Telum aspect
-- Thaumic Exploration used to add a bugged infusion recipe for some non-existant item "Necro Altar" -> it removes that recipe that can make crash other mods like Thaumcraft NEI Plugin : Patched
+- Thaumic Exploration used to add a bugged infusion recipe for some non-existent item "Necro Altar" -> it removes that recipe that can make crash other mods like Thaumcraft NEI Plugin : Patched
 - Thaumic Exploration add 16 floating candles items/blocks, but the recipe for the black one was crashing the game -> patched !
-- Magic Cookies used to give a fully opaque screen when entering a Nether Dark Shrine structure, when using higher Java version
+* Magic Cookies used to give a fully opaque screen when entering a Nether Dark Shrine structure, when using higher Java version
+* Magic Cookies entropy fog intensity can now be configured from 0 to 10, with 4 matching the recommended default behaviour.
+* Adds Harvest Level Config compatibility for:
+  * Thaumcraft's Excavation Focus
+  * Thaumcraft's Primal Crusher
+* Adds Fast Leaf Decay compatibility for:
+  * Thaumcraft Greatwood Leaves
+  * Thaumcraft Silverwood Leaves
+  * Tainted Magic Warpwood Leaves
+* Prevents Thaumic Concilium Thaumaturges and Witchery Village Guards from attacking each other, while preserving their normal combat behaviour against other mobs.
 - Adds the missing prereqs (forgotten by author) for some researches in TC4 addons :
   - Thaumic Bases :
     - Thaumium Bracelet, Void Bracelet and Void Wand Core
