@@ -54,32 +54,15 @@ public class ConfigBugPatches {
             }
         }
         if (isModLoaded(fastLeafDecayEnabled, "fastleafdecay")) {
-            boolean patchThaumcraftLeaves =
-                    thaumcraftMagicalLeavesFastDecayPatchEnabled;
-
-            boolean patchWarpwoodLeaves =
-                    taintedMagicWarpwoodLeavesFastDecayPatchEnabled
-                            && Loader.isModLoaded("TaintedMagic");
-
-            if (patchThaumcraftLeaves || patchWarpwoodLeaves) {
-                patchFastLeafDecayCompatibility(
-                        patchThaumcraftLeaves,
-                        patchWarpwoodLeaves
-                );
-            }
+            boolean patchThaumcraftLeaves = thaumcraftMagicalLeavesFastDecayPatchEnabled;
+            boolean patchWarpwoodLeaves = taintedMagicWarpwoodLeavesFastDecayPatchEnabled && Loader.isModLoaded("TaintedMagic");
+            if (patchThaumcraftLeaves || patchWarpwoodLeaves)
+                patchFastLeafDecayCompatibility(patchThaumcraftLeaves, patchWarpwoodLeaves);
         }
-
-        if (isModLoaded(
-                thaumicConciliumEnabled,
-                "ThaumicConcilium"
-        ) && Loader.isModLoaded("witchery")) {
-
-            if (thaumaturgeWitcheryGuardNonAggressionPatchEnabled) {
-                patchThaumaturgeWitcheryGuardNonAggression();
-            }
+        if (isModLoaded(thaumicConciliumEnabled, "ThaumicConcilium") && Loader.isModLoaded("witchery")) {
+            if (thaumaturgeWitcheryGuardNonAggressionPatchEnabled) patchThaumaturgeWitcheryGuardNonAggression();
         }
     }
-
 
     protected static void patchHiddenBoneBowResearch() {
         ResearchItem research = API.getResearch("ARTIFICE", "BONEBOW");
@@ -154,20 +137,19 @@ public class ConfigBugPatches {
             logger.info("Successfully loaded opaque fog patch for Magic Cookies !");
         }
     }
+
     @Optional.Method(modid = "harvestlevelconfig")
     protected static void patchHlcExcavationFocus() {
         MinecraftForge.EVENT_BUS.register(new HlcExcavationFocusPatch());
         logger.info("Successfully loaded Excavation Focus compatibility patch for Harvest Level Config!");
     }
-
     @Optional.Method(modid = "harvestlevelconfig")
     protected static void patchHlcPrimalCrusher() {
         MinecraftForge.EVENT_BUS.register(new HlcPrimalCrusherPatch());
         logger.info("Successfully loaded Primal Crusher compatibility patch for Harvest Level Config!");
     }
-    protected static void patchFastLeafDecayCompatibility(
-            boolean patchThaumcraftLeaves,
-            boolean patchWarpwoodLeaves) {
+
+    protected static void patchFastLeafDecayCompatibility(boolean patchThaumcraftLeaves, boolean patchWarpwoodLeaves) {
 
         MinecraftForge.EVENT_BUS.register(
                 new FastLeafDecayCompatibilityPatch(
@@ -184,6 +166,7 @@ public class ConfigBugPatches {
                 patchWarpwoodLeaves
         );
     }
+
     protected static void patchThaumaturgeWitcheryGuardNonAggression() {
         MinecraftForge.EVENT_BUS.register(
                 new ThaumaturgeWitcheryGuardNonAggressionPatch()
