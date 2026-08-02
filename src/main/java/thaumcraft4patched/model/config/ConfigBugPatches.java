@@ -1,6 +1,7 @@
 package thaumcraft4patched.model.config;
 
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import nemexlib.api.items.ItemFinder;
 import nemexlib.api.recipes.arcane.ArcaneAdder;
@@ -17,6 +18,10 @@ import thaumcraft.common.config.ConfigItems;
 import thaumcraft4patched.model.patch.MagicCookiesFogPatch;
 import thaumcraft4patched.model.patch.NullParentsPatch;
 import thaumcraft4patched.model.patch.FakePlayerPatch;
+import thaumcraft4patched.model.patch.HlcExcavationFocusPatch;
+import thaumcraft4patched.model.patch.HlcPrimalCrusherPatch;
+import thaumcraft4patched.model.patch.FastLeafDecayCompatibilityPatch;
+import thaumcraft4patched.model.patch.ThaumaturgeWitcheryGuardNonAggressionPatch;
 
 import static thaumcraft.api.aspects.Aspect.AIR;
 import static thaumcraft.api.aspects.Aspect.WEAPON;
@@ -39,7 +44,42 @@ public class ConfigBugPatches {
         if (isModLoaded(mcEnabled, "MagicCookie")) {
             if (opaqueFogNetherDarkShrineJava25PatchEnabled) patchOpaqueFog(post);
         }
+        if (isModLoaded(hlcEnabled, "harvestlevelconfig")) {
+            if (excavationFocusHlcCompatibilityPatchEnabled) {
+                patchHlcExcavationFocus();
+            }
+
+            if (primalCrusherHlcCompatibilityPatchEnabled) {
+                patchHlcPrimalCrusher();
+            }
+        }
+        if (isModLoaded(fastLeafDecayEnabled, "fastleafdecay")) {
+            boolean patchThaumcraftLeaves =
+                    thaumcraftMagicalLeavesFastDecayPatchEnabled;
+
+            boolean patchWarpwoodLeaves =
+                    taintedMagicWarpwoodLeavesFastDecayPatchEnabled
+                            && Loader.isModLoaded("TaintedMagic");
+
+            if (patchThaumcraftLeaves || patchWarpwoodLeaves) {
+                patchFastLeafDecayCompatibility(
+                        patchThaumcraftLeaves,
+                        patchWarpwoodLeaves
+                );
+            }
+        }
+
+        if (isModLoaded(
+                thaumicConciliumEnabled,
+                "ThaumicConcilium"
+        ) && Loader.isModLoaded("witchery")) {
+
+            if (thaumaturgeWitcheryGuardNonAggressionPatchEnabled) {
+                patchThaumaturgeWitcheryGuardNonAggression();
+            }
+        }
     }
+
 
     protected static void patchHiddenBoneBowResearch() {
         ResearchItem research = API.getResearch("ARTIFICE", "BONEBOW");
@@ -113,6 +153,46 @@ public class ConfigBugPatches {
             MinecraftForge.EVENT_BUS.register(new MagicCookiesFogPatch());
             logger.info("Successfully loaded opaque fog patch for Magic Cookies !");
         }
+    }
+    @Optional.Method(modid = "harvestlevelconfig")
+    protected static void patchHlcExcavationFocus() {
+        MinecraftForge.EVENT_BUS.register(new HlcExcavationFocusPatch());
+        logger.info("Successfully loaded Excavation Focus compatibility patch for Harvest Level Config!");
+    }
+
+    @Optional.Method(modid = "harvestlevelconfig")
+    protected static void patchHlcPrimalCrusher() {
+        MinecraftForge.EVENT_BUS.register(new HlcPrimalCrusherPatch());
+        logger.info("Successfully loaded Primal Crusher compatibility patch for Harvest Level Config!");
+    }
+    protected static void patchFastLeafDecayCompatibility(
+            boolean patchThaumcraftLeaves,
+            boolean patchWarpwoodLeaves) {
+
+        MinecraftForge.EVENT_BUS.register(
+                new FastLeafDecayCompatibilityPatch(
+                        patchThaumcraftLeaves,
+                        patchWarpwoodLeaves
+                )
+        );
+
+        logger.info(
+                "Successfully loaded Fast Leaf Decay compatibility patch! "
+                        + "Thaumcraft magical leaves: {}, "
+                        + "Tainted Magic Warpwood leaves: {}",
+                patchThaumcraftLeaves,
+                patchWarpwoodLeaves
+        );
+    }
+    protected static void patchThaumaturgeWitcheryGuardNonAggression() {
+        MinecraftForge.EVENT_BUS.register(
+                new ThaumaturgeWitcheryGuardNonAggressionPatch()
+        );
+
+        logger.info(
+                "Successfully loaded Thaumaturge and Witchery Guard "
+                        + "non-aggression compatibility patch!"
+        );
     }
 
     public static boolean isModLoaded(boolean entry, String modid) {

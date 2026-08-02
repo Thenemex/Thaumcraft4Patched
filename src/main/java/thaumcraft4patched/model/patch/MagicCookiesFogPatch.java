@@ -12,13 +12,26 @@ import org.lwjgl.opengl.GL11;
 import tschallacka.magiccookies.entities.living.ExtendedPlayer;
 import tschallacka.magiccookies.items.StuffLoader;
 import tschallacka.magiccookies.potions.MagicPotionHandler;
+import thaumcraft4patched.config.Config;
 
 import java.nio.FloatBuffer;
 
 @SideOnly(Side.CLIENT)
 public class MagicCookiesFogPatch implements IPatch {
 
-    private static final float ENTROPY_FOG_DENSITY = 0.040F;
+    private static final float[] ENTROPY_FOG_DENSITIES = {
+            0.010F,
+            0.016F,
+            0.023F,
+            0.031F,
+            0.040F,
+            0.045F,
+            0.050F,
+            0.055F,
+            0.060F,
+            0.065F,
+            0.070F
+    };
     private static final int ENTROPY_FOG_DURATION = 400;
     private static final int ENTROPY_FADE_START = 180;
 
@@ -79,7 +92,12 @@ public class MagicCookiesFogPatch implements IPatch {
             remainingEntropyFogFrames--;
         }
 
-        float density = ENTROPY_FOG_DENSITY;
+        int intensity = Math.max(
+                0,
+                Math.min(10, Config.magicCookiesEntropyFogIntensity)
+        );
+
+        float density = ENTROPY_FOG_DENSITIES[intensity];
 
         /*
          * Preserve the intended lingering fog, but fade it safely instead
