@@ -1,7 +1,6 @@
 package thaumcraft4patched.model.config;
 
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import nemexlib.api.items.ItemFinder;
 import nemexlib.api.recipes.arcane.ArcaneAdder;
@@ -154,13 +153,13 @@ public class ConfigBugPatches {
             logger.info("Successfully loaded opaque fog patch for Magic Cookies !");
         }
     }
-    @Optional.Method(modid = "harvestlevelconfig")
+
     protected static void patchHlcExcavationFocus() {
         MinecraftForge.EVENT_BUS.register(new HlcExcavationFocusPatch());
         logger.info("Successfully loaded Excavation Focus compatibility patch for Harvest Level Config!");
     }
 
-    @Optional.Method(modid = "harvestlevelconfig")
+
     protected static void patchHlcPrimalCrusher() {
         MinecraftForge.EVENT_BUS.register(new HlcPrimalCrusherPatch());
         logger.info("Successfully loaded Primal Crusher compatibility patch for Harvest Level Config!");
