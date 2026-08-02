@@ -27,7 +27,7 @@ public class Config extends AConfig {
     }
 
     protected void loadConfig() {
-        String mods = "Mods", mc = "Magic Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases", tx = "Thaumic-Exploration", wg = "Witching-Gadgets",fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium";
+        String mods = "Mods", mc = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases", tx = "Thaumic-Exploration", wg = "Witching-Gadgets",fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium";
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Magic Cookies");
         hlcEnabled = newEntry(mods, "Harvest Level Config");
