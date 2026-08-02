@@ -17,13 +17,7 @@ public class HlcPrimalCrusherPatch implements IPatch {
 
     private static final int PRIMAL_CRUSHER_HARVEST_LEVEL = 5;
 
-    private final ThreadLocal<Deque<CapturedDrops>> capturedDrops =
-            new ThreadLocal<Deque<CapturedDrops>>() {
-                @Override
-                protected Deque<CapturedDrops> initialValue() {
-                    return new ArrayDeque<CapturedDrops>();
-                }
-            };
+    private final ThreadLocal<Deque<CapturedDrops>> capturedDrops = ThreadLocal.withInitial(ArrayDeque::new);
 
     /*
      * Captures the drops before HLC checks the held Primal Crusher.
@@ -71,7 +65,7 @@ public class HlcPrimalCrusherPatch implements IPatch {
         }
 
         List<ItemStack> copiedDrops =
-                new ArrayList<ItemStack>(event.drops.size());
+                new ArrayList<>(event.drops.size());
 
         for (ItemStack drop : event.drops) {
             if (drop != null) {
