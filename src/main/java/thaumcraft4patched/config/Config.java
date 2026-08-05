@@ -22,7 +22,7 @@ public class Config extends AConfig {
     public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled, removeNecroInfusionRecipe;
 
     public Config(FMLPreInitializationEvent event) {
-        super(Thaumcraft4Patched.modName, event, "1.6");
+        super(Thaumcraft4Patched.modName, event, "1.6.1");
     }
 
     protected void loadConfig() {
