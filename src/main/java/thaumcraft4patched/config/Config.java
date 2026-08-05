@@ -2,8 +2,7 @@ package thaumcraft4patched.config;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import nemexlib.config.AConfig;
-
-import static thaumcraft4patched.Thaumcraft4Patched.modName;
+import thaumcraft4patched.Thaumcraft4Patched;
 
 public class Config extends AConfig {
 
@@ -23,7 +22,7 @@ public class Config extends AConfig {
     public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled, removeNecroInfusionRecipe;
 
     public Config(FMLPreInitializationEvent event) {
-        super(event, modName, modName, "1.6");
+        super(Thaumcraft4Patched.modName, event, "1.6");
     }
 
     protected void loadConfig() {
