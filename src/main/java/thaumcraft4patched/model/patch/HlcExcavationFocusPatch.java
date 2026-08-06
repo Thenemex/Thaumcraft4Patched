@@ -17,6 +17,12 @@ import java.util.Map;
 
 public class HlcExcavationFocusPatch implements IPatch {
 
+    /*
+     * Matches diamond and Thaumium tool capability in Thaumcraft 4.
+     *
+     * A future focus upgrade may raise this capability, but that behaviour
+     * is deliberately not included in the current compatibility patch.
+     */
     private static final int DIAMOND_HARVEST_LEVEL = 3;
 
     private final ThreadLocal<Deque<CapturedDrops>> capturedDrops =
@@ -30,6 +36,10 @@ public class HlcExcavationFocusPatch implements IPatch {
     /*
      * Runs before HLC so the drops calculated by Thaumcraft can be
      * preserved in case HLC rejects the held wand as a mining tool.
+     *
+     * This only runs while the Excavation Focus's actual magic is
+     * harvesting a block. Merely hitting a block with the wand does not
+     * activate the harvest context.
      */
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void captureDrops(BlockEvent.HarvestDropsEvent event) {
@@ -37,6 +47,14 @@ public class HlcExcavationFocusPatch implements IPatch {
             return;
         }
 
+        if (!ExcavationFocusHarvestContext.isActive()) {
+            return;
+        }
+
+        /*
+         * Defensive verification that the player is still holding a wand
+         * with the Excavation Focus equipped.
+         */
         if (!isUsingExcavationFocus(event.harvester)) {
             return;
         }
@@ -53,10 +71,18 @@ public class HlcExcavationFocusPatch implements IPatch {
 
         ItemStack heldItem = event.harvester.getHeldItem();
 
+        /*
+         * Preserve normal behaviour when the held item already satisfies
+         * HLC without compatibility handling.
+         */
         if (canHeldItemHarvest(heldItem, requiredTools)) {
             return;
         }
 
+        /*
+         * Excavation Focus magic currently emulates diamond/Thaumium-level
+         * pickaxe, axe and shovel capability.
+         */
         if (!canVirtualDiamondToolsHarvest(requiredTools)) {
             return;
         }
@@ -83,8 +109,7 @@ public class HlcExcavationFocusPatch implements IPatch {
 
     /*
      * Runs after HLC. Drops are restored only when HLC emptied the list
-     * and the Excavation Focus qualifies as a diamond pickaxe, axe or
-     * shovel for that configured block.
+     * during a matching Excavation Focus magic harvest.
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void restoreDrops(BlockEvent.HarvestDropsEvent event) {

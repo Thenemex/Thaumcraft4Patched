@@ -44,7 +44,11 @@ public class Config extends AConfig {
         magicCookiesEntropyFogIntensity = newEntry(mc, "EntropyFogIntensity", 4, 0, 10, "Controls the Dark Shrine entropy fog intensity. 0 is the lightest, 4 is the recommended default, and 10 is the strongest.");
 
         comment(hlc, "You can disable/enable compatibility patches for Harvest Level Config here");
-        excavationFocusHlcCompatibilityPatchEnabled = newEntry(hlc, "ExcavationFocusDiamondTools", "Makes the Thaumcraft Excavation Focus count as a diamond-level pickaxe, axe, and shovel for blocks edited by Harvest Level Config");
+        excavationFocusHlcCompatibilityPatchEnabled = newEntry(
+                hlc,
+                "ExcavationFocusDiamondTools",
+                "While the Excavation Focus magic is actively mining, treats it as a diamond/Thaumium-level pickaxe, axe, and shovel for Harvest Level Config and compatible tool checks. Physically mining with the wand itself remains equivalent to using an empty hand."
+        );
         primalCrusherHlcCompatibilityPatchEnabled = newEntry(hlc, "PrimalCrusherTools", "Makes the Thaumcraft Primal Crusher correctly count as a level-5 pickaxe and shovel for blocks edited by Harvest Level Config");
 
         comment(fld, "You can disable/enable compatibility patches for Fast Leaf Decay here");
