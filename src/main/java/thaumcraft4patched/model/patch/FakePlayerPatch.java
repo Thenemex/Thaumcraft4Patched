@@ -18,7 +18,7 @@ import static thaumcraft4patched.Thaumcraft4Patched.logger;
 @SuppressWarnings("unchecked")
 public class FakePlayerPatch implements IPatch {
 
-    public static final GameProfile username = new GameProfile(null, "FakeThaumcraftGolem");
+    public static final GameProfile username = new GameProfile(null, "FakeThaumcraftGolemLumber");
     protected static FakePlayer golem;
 
     protected Map<GameProfile, FakePlayer> fakePlayers;
