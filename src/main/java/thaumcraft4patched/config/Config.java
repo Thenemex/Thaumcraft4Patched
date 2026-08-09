@@ -7,8 +7,7 @@ import thaumcraft4patched.Thaumcraft4Patched;
 public class Config extends AConfig {
 
     public static boolean mcEnabled, opaqueFogNetherDarkShrineJava25PatchEnabled;
-    public static int magicCookiesEntropyFogIntensity,
-            magicCookiesEntropyFogCloseness;
+    public static int magicCookiesEntropyFogIntensity;
     public static boolean hlcEnabled,
             excavationFocusHlcCompatibilityPatchEnabled,
             primalCrusherHlcCompatibilityPatchEnabled;
@@ -43,7 +42,6 @@ public class Config extends AConfig {
         comment(mc, "You can disable/enable bug patches for Magic Cookies here");
         opaqueFogNetherDarkShrineJava25PatchEnabled = newEntry(mc, "OpaqueFogNetherDarkShrineJava25", "Removes the opaque fog inside the Dark Shrine, when using higher Java version");
         magicCookiesEntropyFogIntensity = newEntry(mc, "EntropyFogIntensity", 4, 0, 10, "Controls the Dark Shrine entropy fog intensity. 0 is the lightest, 4 is the recommended default, and 10 is the strongest.");
-        magicCookiesEntropyFogCloseness = newEntry(mc, "EntropyFogCloseness", 5, 0, 10, "Controls how close the Dark Shrine entropy fog appears around the player. 0 keeps the fog furthest away, 5 preserves the normal patched distance, and 10 brings the fog closest.");
 
         comment(hlc, "You can disable/enable compatibility patches for Harvest Level Config here");
         excavationFocusHlcCompatibilityPatchEnabled = newEntry(
