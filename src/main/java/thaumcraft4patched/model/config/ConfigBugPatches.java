@@ -35,12 +35,13 @@ public class ConfigBugPatches {
             if (boneBowResearchPatchEnabled) patchHiddenBoneBowResearch();
             if (golemLumberCoreWoodHardnessPatchEnabled) patchGolemLumberCoreWoodHardness();
             if (nullResearchParentsPatchEnabled) patchNullResearchParents();
+            if (oakWoodenSlabBuggedRecipePatchEnabled) patchWoodenSlabBuggedRecipes();
         }
         if (isModLoaded(txEnabled, "ThaumicExploration")) {
             if (removeNecroInfusionRecipe) removeNecroInfusionRecipe();
             if (blackFloatingCandleRecipePatchEnabled) patchBlackFloatingCandleRecipe();
         }
-        if (isModLoaded(mcEnabled, "MagicCookie")) {
+        if (isModLoaded(mgckEnabled, "MagicCookie")) {
             if (opaqueFogNetherDarkShrineJava25PatchEnabled) patchOpaqueFog(post);
         }
         if (isModLoaded(hlcEnabled, "harvestlevelconfig")) {
@@ -52,26 +53,26 @@ public class ConfigBugPatches {
                 patchHlcPrimalCrusher();
             }
         }
-        if (isModLoaded(fastLeafDecayEnabled, "fastleafdecay")) {
+        if (isModLoaded(fldEnabled, "fastleafdecay")) {
             boolean patchThaumcraftLeaves = thaumcraftMagicalLeavesFastDecayPatchEnabled;
             boolean patchWarpwoodLeaves = taintedMagicWarpwoodLeavesFastDecayPatchEnabled && Loader.isModLoaded("TaintedMagic");
             if (patchThaumcraftLeaves || patchWarpwoodLeaves)
                 patchFastLeafDecayCompatibility(patchThaumcraftLeaves, patchWarpwoodLeaves);
         }
-        if (isModLoaded(thaumicConciliumEnabled, "ThaumicConcilium") && Loader.isModLoaded("witchery")) {
+        if (isModLoaded(tcclmEnabled, "ThaumicConcilium") && Loader.isModLoaded("witchery")) {
             if (thaumaturgeWitcheryGuardNonAggressionPatchEnabled) patchThaumaturgeWitcheryGuardNonAggression();
         }
     }
 
-    protected static void patchHiddenBoneBowResearch() {
+    private static void patchHiddenBoneBowResearch() {
         ResearchItem research = API.getResearch("ARTIFICE", "BONEBOW");
         research.setItemTriggers(); // Cleared all item triggers
         research.setAspectTriggers(WEAPON);
     }
-    protected static void patchGolemLumberCoreWoodHardness() {
+    private static void patchGolemLumberCoreWoodHardness() {
         MinecraftForge.EVENT_BUS.register(new FakePlayerPatch());
     }
-    protected static void patchNullResearchParents() {
+    private static void patchNullResearchParents() {
         int cpt = 0;
         for (ResearchCategoryList rl : researchCategories.values())
             for (ResearchItem ri : rl.research.values()) {
@@ -88,8 +89,11 @@ public class ConfigBugPatches {
 
         MinecraftForge.EVENT_BUS.register(new NullParentsPatch());
     }
+    private static void patchWoodenSlabBuggedRecipes() {
 
-    protected static void removeNecroInfusionRecipe() {
+    }
+
+    private static void removeNecroInfusionRecipe() {
         InfusionRecipe recipe, toRemove = null;
         for (Object o : ThaumcraftApi.getCraftingRecipes())
             if (o instanceof InfusionRecipe) {
@@ -103,7 +107,7 @@ public class ConfigBugPatches {
         } else
             logger.info("Could not remove or find infusion recipe linked to \"NECROINFUSION\" tag ...");
     }
-    protected static void patchBlackFloatingCandleRecipe() {
+    private static void patchBlackFloatingCandleRecipe() {
         ShapelessArcaneRecipe recipeToRemove = null;
         String researchTag = "FLOATCANDLE";
         for (Object o : ThaumcraftApi.getCraftingRecipes())
@@ -130,23 +134,23 @@ public class ConfigBugPatches {
         }
     }
 
-    protected static void patchOpaqueFog(FMLPostInitializationEvent event) {
+    private static void patchOpaqueFog(FMLPostInitializationEvent event) {
         if (event.getSide().isClient()) {
             MinecraftForge.EVENT_BUS.register(new MagicCookiesFogPatch());
             logger.info("Successfully loaded opaque fog patch for Magic Cookies !");
         }
     }
 
-    protected static void patchHlcExcavationFocus() {
+    private static void patchHlcExcavationFocus() {
         MinecraftForge.EVENT_BUS.register(new HlcExcavationFocusPatch());
         logger.info("Successfully loaded Excavation Focus compatibility patch for Harvest Level Config!");
     }
-    protected static void patchHlcPrimalCrusher() {
+    private static void patchHlcPrimalCrusher() {
         MinecraftForge.EVENT_BUS.register(new HlcPrimalCrusherPatch());
         logger.info("Successfully loaded Primal Crusher compatibility patch for Harvest Level Config!");
     }
 
-    protected static void patchFastLeafDecayCompatibility(boolean patchThaumcraftLeaves, boolean patchWarpwoodLeaves) {
+    private static void patchFastLeafDecayCompatibility(boolean patchThaumcraftLeaves, boolean patchWarpwoodLeaves) {
 
         MinecraftForge.EVENT_BUS.register(
                 new FastLeafDecayCompatibilityPatch(
@@ -164,7 +168,7 @@ public class ConfigBugPatches {
         );
     }
 
-    protected static void patchThaumaturgeWitcheryGuardNonAggression() {
+    private static void patchThaumaturgeWitcheryGuardNonAggression() {
         MinecraftForge.EVENT_BUS.register(
                 new ThaumaturgeWitcheryGuardNonAggressionPatch()
         );
@@ -175,7 +179,7 @@ public class ConfigBugPatches {
         );
     }
 
-    public static boolean isModLoaded(boolean entry, String modid) {
+    private static boolean isModLoaded(boolean entry, String modid) {
         return entry && Loader.isModLoaded(modid);
     }
 }

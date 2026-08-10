@@ -131,11 +131,11 @@ public class MagicCookiesFogPatch implements IPatch {
         }
 
         int intensity = clampConfigValue(
-                Config.magicCookiesEntropyFogIntensity
+                Config.mgckEntropyFogIntensity
         );
 
         int closeness = clampConfigValue(
-                Config.magicCookiesEntropyFogCloseness
+                Config.mgckEntropyFogCloseness
         );
 
         float closenessMultiplier =
