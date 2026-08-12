@@ -237,7 +237,7 @@ public class ThaumaturgeWitcheryGuardNonAggressionPatch
                     );
         } catch (NoSuchMethodException exception) {
             logger.error(
-                    "Could not locate Thaumic Concilium's "
+                    "Could not locate Thaumic Concilium "
                             + "Thaumaturge#setAnger method. Existing anger "
                             + "may take time to expire naturally.",
                     exception

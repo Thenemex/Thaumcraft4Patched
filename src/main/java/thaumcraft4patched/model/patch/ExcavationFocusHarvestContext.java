@@ -11,14 +11,14 @@ import java.util.ArrayList;
 
 /**
  * Tracks harvest events produced by the Excavation Focus's active magic.
- *
+ * <p>
  * Physical block breaking with the wand itself does not use these wrappers
  * and therefore does not activate this context.
  */
+@SuppressWarnings("unused")
 public final class ExcavationFocusHarvestContext {
 
-    private static final ThreadLocal<Integer> ACTIVE_DEPTH =
-            new ThreadLocal<Integer>();
+    private static final ThreadLocal<Integer> ACTIVE_DEPTH = new ThreadLocal<>();
 
     private ExcavationFocusHarvestContext() {
     }
@@ -46,9 +46,9 @@ public final class ExcavationFocusHarvestContext {
     /**
      * True only while the Excavation Focus's magic is generating block drops.
      */
-    public static boolean isActive() {
+    public static boolean isNotActive() {
         Integer depth = ACTIVE_DEPTH.get();
-        return depth != null && depth > 0;
+        return depth == null || depth <= 0;
     }
 
     /**

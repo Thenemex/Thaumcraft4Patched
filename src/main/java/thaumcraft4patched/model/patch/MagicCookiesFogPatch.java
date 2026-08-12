@@ -37,7 +37,7 @@ public class MagicCookiesFogPatch implements IPatch {
      * Exponential fog does not have a separate start/end distance.
      * Closeness therefore adjusts the fog density around the selected
      * intensity while keeping setting 5 identical to the normal patched
-     * behaviour.
+     * behavior.
      *
      * Lower values push the fog farther away from the player, while higher
      * values make it close in much more aggressively.
@@ -138,6 +138,18 @@ public class MagicCookiesFogPatch implements IPatch {
                 Config.mgckEntropyFogCloseness
         );
 
+        float density = getDensity(closeness, intensity, entropyActive);
+
+        applyFog(
+                extendedPlayer,
+                lastRed,
+                lastGreen,
+                lastBlue,
+                density
+        );
+    }
+
+    private float getDensity(int closeness, int intensity, boolean entropyActive) {
         float closenessMultiplier =
                 ENTROPY_FOG_CLOSENESS_MULTIPLIERS[closeness];
 
@@ -160,14 +172,7 @@ public class MagicCookiesFogPatch implements IPatch {
             density *= remainingEntropyFogFrames
                     / (float) ENTROPY_FADE_START;
         }
-
-        applyFog(
-                extendedPlayer,
-                lastRed,
-                lastGreen,
-                lastBlue,
-                density
-        );
+        return density;
     }
 
     private static boolean hasAnotherMagicCookiesFog(

@@ -166,7 +166,7 @@ public class TCPatchTransformer implements IClassTransformer {
     /**
      * Wraps only the harvest calls inside the Excavation Focus's private
      * excavate method.
-     *
+     * <p>
      * Physically hitting a block with the wand does not use this method and
      * therefore does not activate the focus-magic harvest context.
      */

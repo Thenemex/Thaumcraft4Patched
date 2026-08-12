@@ -14,10 +14,11 @@ import static thaumcraft4patched.config.Config.excavationFocusHlcCompatibilityPa
 /**
  * Provides Ender Zoo compatibility while the Excavation Focus is actively
  * using its magic.
- *
+ * <p>
  * This does not make the wand itself an effective tool. Physically hitting
  * a block with the wand remains equivalent to mining it by hand.
  */
+@SuppressWarnings("unused")
 public final class HlcExcavationFocusToolPatch {
 
     private HlcExcavationFocusToolPatch() {
@@ -41,7 +42,7 @@ public final class HlcExcavationFocusToolPatch {
         }
 
         /*
-         * Keep this behaviour tied to the existing HLC Excavation Focus
+         * Keep this behavior tied to the existing HLC Excavation Focus
          * compatibility option.
          */
         if (!excavationFocusHlcCompatibilityPatchEnabled
@@ -53,7 +54,7 @@ public final class HlcExcavationFocusToolPatch {
          * Only genuine Excavation Focus magic receives compatibility.
          * Merely punching a block with the wand does not activate this.
          */
-        if (!ExcavationFocusHarvestContext.isActive()) {
+        if (ExcavationFocusHarvestContext.isNotActive()) {
             return false;
         }
 

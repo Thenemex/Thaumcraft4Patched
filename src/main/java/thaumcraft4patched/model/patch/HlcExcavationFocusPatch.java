@@ -20,18 +20,12 @@ public class HlcExcavationFocusPatch implements IPatch {
     /*
      * Matches diamond and Thaumium tool capability in Thaumcraft 4.
      *
-     * A future focus upgrade may raise this capability, but that behaviour
+     * A future focus upgrade may raise this capability, but that behavior
      * is deliberately not included in the current compatibility patch.
      */
     private static final int DIAMOND_HARVEST_LEVEL = 3;
 
-    private final ThreadLocal<Deque<CapturedDrops>> capturedDrops =
-            new ThreadLocal<Deque<CapturedDrops>>() {
-                @Override
-                protected Deque<CapturedDrops> initialValue() {
-                    return new ArrayDeque<CapturedDrops>();
-                }
-            };
+    private final ThreadLocal<Deque<CapturedDrops>> capturedDrops = ThreadLocal.withInitial(ArrayDeque::new);
 
     /*
      * Runs before HLC so the drops calculated by Thaumcraft can be
@@ -47,7 +41,7 @@ public class HlcExcavationFocusPatch implements IPatch {
             return;
         }
 
-        if (!ExcavationFocusHarvestContext.isActive()) {
+        if (ExcavationFocusHarvestContext.isNotActive()) {
             return;
         }
 
@@ -72,7 +66,7 @@ public class HlcExcavationFocusPatch implements IPatch {
         ItemStack heldItem = event.harvester.getHeldItem();
 
         /*
-         * Preserve normal behaviour when the held item already satisfies
+         * Preserve normal behavior when the held item already satisfies
          * HLC without compatibility handling.
          */
         if (canHeldItemHarvest(heldItem, requiredTools)) {
@@ -91,8 +85,7 @@ public class HlcExcavationFocusPatch implements IPatch {
             return;
         }
 
-        List<ItemStack> copiedDrops =
-                new ArrayList<ItemStack>(event.drops.size());
+        List<ItemStack> copiedDrops = new ArrayList<>(event.drops.size());
 
         for (ItemStack drop : event.drops) {
             if (drop != null) {
