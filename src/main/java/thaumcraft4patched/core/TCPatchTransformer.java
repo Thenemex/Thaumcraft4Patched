@@ -6,6 +6,8 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -132,6 +134,29 @@ public class TCPatchTransformer implements IClassTransformer {
     private static final String ANGELICA_RENDER_SIGN_DESCRIPTOR =
             "(Lnet/minecraft/client/model/ModelSign;)V";
 
+    private static final String MAGIC_COOKIES_DARK_SHRINE_TARGET =
+            "tschallacka.magiccookies.worldgen.WorldGenDarkShrine";
+
+    private static final String DARK_SHRINE_GENERATE_NAME =
+            "generateDungeonAt";
+
+    private static final String GET_BLOCK_DESCRIPTOR =
+            "(III)Lnet/minecraft/block/Block;";
+
+    private static final String BLOCKS_OWNER =
+            "net/minecraft/init/Blocks";
+
+    private static final String BLOCK_FIELD_DESCRIPTOR =
+            "Lnet/minecraft/block/Block;";
+
+    private static final String DARK_SHRINE_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/"
+                    + "MagicCookiesDarkShrineFillPatch";
+
+    private static final String PATCH_GET_BLOCK_DESCRIPTOR =
+            "(Lnet/minecraft/world/World;IIII)"
+                    + "Lnet/minecraft/block/Block;";
+
     @Override
     public byte[] transform(
             String name,
@@ -160,6 +185,10 @@ public class TCPatchTransformer implements IClassTransformer {
 
         if (ANGELICA_MODEL_MESHES_TARGET.equals(transformedName)) {
             return transformAngelicaModelMeshes(basicClass);
+        }
+
+        if (MAGIC_COOKIES_DARK_SHRINE_TARGET.equals(transformedName)) {
+            return transformMagicCookiesDarkShrine(basicClass);
         }
         return basicClass;
     }
@@ -604,6 +633,242 @@ public class TCPatchTransformer implements IClassTransformer {
         );
 
         return writeClass(classNode);
+    }
+
+    /**
+     * Sends the block read of the Dark Shrine foundation loop through our
+     * helper, so the loop gets a floor.
+     *
+     * The loop keeps the vertical offset in a local variable that starts at -8
+     * and goes down by one for each layer. The helper needs that offset, so the
+     * offset is pushed as an extra argument and the read becomes a static call.
+     *
+     * Only a read that feeds a comparison with air, and that uses a counter the
+     * method lowers by one, is treated as the foundation loop. A method with
+     * more than one read of that shape is left alone.
+     */
+    private byte[] transformMagicCookiesDarkShrine(byte[] basicClass) {
+        ClassNode classNode = readClass(basicClass);
+        MethodNode targetMethod = null;
+
+        for (MethodNode method : classNode.methods) {
+            if (DARK_SHRINE_GENERATE_NAME.equals(method.name)) {
+                targetMethod = method;
+                break;
+            }
+        }
+
+        if (targetMethod == null) {
+            logger.error(
+                    "Could not find Magic Cookies WorldGenDarkShrine."
+                            + "generateDungeonAt. The endless foundation "
+                            + "patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        if (!patchDarkShrineFoundationLoop(targetMethod)) {
+            logger.error(
+                    "Could not find the Magic Cookies Dark Shrine "
+                            + "foundation loop. The endless foundation "
+                            + "patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        logger.info(
+                "Successfully transformed the Magic Cookies Dark Shrine "
+                        + "foundation loop to stop at a set depth!"
+        );
+
+        return writeClass(classNode);
+    }
+
+    private boolean patchDarkShrineFoundationLoop(MethodNode method) {
+        MethodInsnNode foundationBlockRead = null;
+        int foundationCounter = -1;
+
+        for (AbstractInsnNode instruction
+                : method.instructions.toArray()) {
+
+            if (!(instruction instanceof MethodInsnNode)) {
+                continue;
+            }
+
+            MethodInsnNode methodCall =
+                    (MethodInsnNode) instruction;
+
+            if (methodCall.getOpcode() != Opcodes.INVOKEVIRTUAL
+                    || !WORLD_OWNER.equals(methodCall.owner)
+                    || !GET_BLOCK_DESCRIPTOR.equals(methodCall.desc)
+                    || !("func_147439_a".equals(methodCall.name)
+                    || "getBlock".equals(methodCall.name))) {
+
+                continue;
+            }
+
+            if (!isAirLoopTest(methodCall)) {
+                continue;
+            }
+
+            int counter = findFoundationCounter(methodCall);
+
+            if (counter < 0
+                    || !hasDecrement(method, counter)) {
+
+                continue;
+            }
+
+            /*
+             * A second loop of the same shape would make the counter
+             * unsafe to guess. Leave the class as it is.
+             */
+            if (foundationBlockRead != null) {
+                return false;
+            }
+
+            foundationBlockRead = methodCall;
+            foundationCounter = counter;
+        }
+
+        if (foundationBlockRead == null) {
+            return false;
+        }
+
+        method.instructions.insertBefore(
+                foundationBlockRead,
+                new VarInsnNode(Opcodes.ILOAD, foundationCounter)
+        );
+
+        foundationBlockRead.setOpcode(Opcodes.INVOKESTATIC);
+        foundationBlockRead.owner = DARK_SHRINE_PATCH_OWNER;
+        foundationBlockRead.name = "getBlock";
+        foundationBlockRead.desc = PATCH_GET_BLOCK_DESCRIPTOR;
+
+        /*
+         * ClassWriter(0) keeps the stored maxStack, and the extra
+         * argument holds one more slot.
+         */
+        method.maxStack = method.maxStack + 1;
+
+        return true;
+    }
+
+    /**
+     * Tells if this block read feeds the air test of the foundation loop.
+     */
+    private static boolean isAirLoopTest(MethodInsnNode blockRead) {
+        AbstractInsnNode airRead = nextRealInstruction(blockRead);
+
+        if (!(airRead instanceof FieldInsnNode)) {
+            return false;
+        }
+
+        FieldInsnNode airField = (FieldInsnNode) airRead;
+
+        if (airField.getOpcode() != Opcodes.GETSTATIC
+                || !BLOCKS_OWNER.equals(airField.owner)
+                || !BLOCK_FIELD_DESCRIPTOR.equals(airField.desc)
+                || !("field_150350_a".equals(airField.name)
+                || "air".equals(airField.name))) {
+
+            return false;
+        }
+
+        AbstractInsnNode comparison =
+                nextRealInstruction(airRead);
+
+        return comparison != null
+                && comparison.getOpcode() == Opcodes.IF_ACMPNE;
+    }
+
+    /**
+     * Reads back the arguments of the block read and gives the local variable
+     * that holds the vertical offset of the loop.
+     *
+     * The expected shape, in normal order, is the world, then three sums of two
+     * local variables. The second variable of the middle sum is the offset.
+     */
+    private static int findFoundationCounter(MethodInsnNode blockRead) {
+        int[] expectedOpcodes = {
+                Opcodes.IADD, Opcodes.ILOAD, Opcodes.ILOAD,
+                Opcodes.IADD, Opcodes.ILOAD, Opcodes.ILOAD,
+                Opcodes.IADD, Opcodes.ILOAD, Opcodes.ILOAD,
+                Opcodes.ALOAD
+        };
+
+        AbstractInsnNode current = blockRead;
+        int counter = -1;
+
+        for (int index = 0; index < expectedOpcodes.length; index++) {
+            current = previousRealInstruction(current);
+
+            if (current == null
+                    || current.getOpcode() != expectedOpcodes[index]) {
+
+                return -1;
+            }
+
+            if (index == 4) {
+                counter = ((VarInsnNode) current).var;
+            }
+        }
+
+        return counter;
+    }
+
+    private static boolean hasDecrement(
+            MethodNode method,
+            int variable) {
+
+        for (AbstractInsnNode instruction
+                : method.instructions.toArray()) {
+
+            if (!(instruction instanceof IincInsnNode)) {
+                continue;
+            }
+
+            IincInsnNode increment =
+                    (IincInsnNode) instruction;
+
+            if (increment.var == variable
+                    && increment.incr < 0) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static AbstractInsnNode nextRealInstruction(
+            AbstractInsnNode instruction) {
+
+        AbstractInsnNode current = instruction.getNext();
+
+        while (current != null
+                && current.getOpcode() < 0) {
+
+            current = current.getNext();
+        }
+
+        return current;
+    }
+
+    private static AbstractInsnNode previousRealInstruction(
+            AbstractInsnNode instruction) {
+
+        AbstractInsnNode current = instruction.getPrevious();
+
+        while (current != null
+                && current.getOpcode() < 0) {
+
+            current = current.getPrevious();
+        }
+
+        return current;
     }
 
     private static ClassNode readClass(byte[] basicClass) {
