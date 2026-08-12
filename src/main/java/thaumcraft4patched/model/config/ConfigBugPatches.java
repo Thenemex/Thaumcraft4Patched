@@ -4,8 +4,11 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import nemexlib.api.items.ItemFinder;
 import nemexlib.api.recipes.arcane.ArcaneAdder;
+import nemexlib.api.recipes.workbench.WorkbenchAdder;
 import nemexlib.api.thaumcraft.API;
 import nemexlib.api.thaumcraft.aspects.Aspects;
+import nemexlib.model.config.RecipeHelpers;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import thaumcraft.api.ThaumcraftApi;
@@ -31,11 +34,13 @@ import static thaumcraft4patched.config.Config.*;
 public class ConfigBugPatches {
 
     public static void init(FMLPostInitializationEvent post) {
+        if (mcEnabled) {
+            if (oakWoodenSlabBuggedRecipePatchEnabled) patchWoodenSlabBuggedRecipes();
+        }
         if (tc4Enabled) {
             if (boneBowResearchPatchEnabled) patchHiddenBoneBowResearch();
             if (golemLumberCoreWoodHardnessPatchEnabled) patchGolemLumberCoreWoodHardness();
             if (nullResearchParentsPatchEnabled) patchNullResearchParents();
-            if (oakWoodenSlabBuggedRecipePatchEnabled) patchWoodenSlabBuggedRecipes();
         }
         if (isModLoaded(txEnabled, "ThaumicExploration")) {
             if (removeNecroInfusionRecipe) removeNecroInfusionRecipe();
@@ -90,7 +95,10 @@ public class ConfigBugPatches {
         MinecraftForge.EVENT_BUS.register(new NullParentsPatch());
     }
     private static void patchWoodenSlabBuggedRecipes() {
-
+        ItemStack slabs = new ItemStack(Blocks.wooden_slab, 6, 0);
+        RecipeHelpers.workbenchRemover.removePrecise(slabs);
+        WorkbenchAdder.addRecipe(slabs, false,
+                "PPP", 'P', new ItemStack(Blocks.planks, 1, 0));
     }
 
     private static void removeNecroInfusionRecipe() {
