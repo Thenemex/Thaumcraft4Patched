@@ -7,6 +7,7 @@ import thaumcraft4patched.Thaumcraft4Patched;
 public class Config extends AConfig {
 
     public static boolean mcEnabled, oakWoodenSlabBuggedRecipePatchEnabled;
+    public static boolean angelicaEnabled, angelicaSignEditorCompatibilityPatchEnabled;
     public static boolean mgckEnabled, opaqueFogNetherDarkShrineJava25PatchEnabled;
     public static int mgckEntropyFogIntensity, mgckEntropyFogCloseness;
     public static boolean hlcEnabled, excavationFocusHlcCompatibilityPatchEnabled, primalCrusherHlcCompatibilityPatchEnabled;
@@ -23,11 +24,11 @@ public class Config extends AConfig {
     }
 
     protected void loadConfig() {
-        String mods = "Mods", mc = "Minecraft", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
+        String mods = "Mods", mc = "Minecraft", angelica = "Angelica", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
                 tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery";
-
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Minecraft");
+        angelicaEnabled = newEntry(mods, "Angelica");
         mgckEnabled = newEntry(mods, "Magic Cookies");
         hlcEnabled = newEntry(mods, "Harvest Level Config");
         fldEnabled = newEntry(mods, "Fast Leaf Decay");
@@ -40,6 +41,13 @@ public class Config extends AConfig {
 
         comment(mc, "You can disable/enable bug patches for vanilla Minecraft here");
         oakWoodenSlabBuggedRecipePatchEnabled = newEntry(mc, "OakWoodenSlab", "Removes the recipe that overtake over all other wooden slabs, allowing to make only oak wooden slabs");
+
+        comment(angelica, "You can disable/enable compatibility patches for Angelica here");
+        angelicaSignEditorCompatibilityPatchEnabled = newEntry(
+                angelica,
+                "SignEditorCompatibility",
+                "Prevents Angelica's cached sign rendering from corrupting the vanilla sign editor while preserving cached sign rendering outside the editor"
+        );
 
         comment(mgck, "You can disable/enable bug patches for Magic Cookies here");
         opaqueFogNetherDarkShrineJava25PatchEnabled = newEntry(mgck, "OpaqueFogNetherDarkShrineJava25", "Removes the opaque fog inside the Dark Shrine, when using higher Java version");

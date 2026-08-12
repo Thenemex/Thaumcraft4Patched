@@ -9,6 +9,8 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import static thaumcraft4patched.Thaumcraft4Patched.logger;
 
@@ -114,6 +116,22 @@ public class TCPatchTransformer implements IClassTransformer {
             "thaumcraft4patched/model/patch/"
                     + "HlcExcavationFocusToolPatch";
 
+    private static final String ANGELICA_MODEL_MESHES_TARGET =
+            "com.gtnewhorizons.angelica.rendering.tesr.VanillaModelMeshes";
+
+    private static final String ANGELICA_SIGN_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/"
+                    + "AngelicaSignEditorCompatibilityPatch";
+
+    private static final String ANGELICA_RENDER_SIGN_NAME =
+            "renderSign";
+
+    private static final String ANGELICA_RENDER_SIGN_CACHED_NAME =
+            "tc4patched$renderSignCached";
+
+    private static final String ANGELICA_RENDER_SIGN_DESCRIPTOR =
+            "(Lnet/minecraft/client/model/ModelSign;)V";
+
     @Override
     public byte[] transform(
             String name,
@@ -140,6 +158,9 @@ public class TCPatchTransformer implements IClassTransformer {
             return transformWitcheryRaiseLandClass(basicClass);
         }
 
+        if (ANGELICA_MODEL_MESHES_TARGET.equals(transformedName)) {
+            return transformAngelicaModelMeshes(basicClass);
+        }
         return basicClass;
     }
 
@@ -472,6 +493,117 @@ public class TCPatchTransformer implements IClassTransformer {
                 PATCH_SET_BLOCK_DESCRIPTOR;
 
         return true;
+    }
+
+    /**
+     * Wraps Angelica's cached vanilla sign renderer with our compatibility
+     * helper while preserving the original cached implementation.
+     *
+     * The original renderSign(ModelSign) method is renamed and a same-signature
+     * wrapper is installed in its place. Normal rendering therefore continues
+     * to use Angelica's cached implementation, while the helper can selectively
+     * fall back to vanilla rendering inside the sign editor.
+     */
+    private byte[] transformAngelicaModelMeshes(byte[] basicClass) {
+        ClassNode classNode = readClass(basicClass);
+        MethodNode originalRenderSign = null;
+
+        for (MethodNode method : classNode.methods) {
+            if (ANGELICA_RENDER_SIGN_CACHED_NAME.equals(method.name)
+                    && ANGELICA_RENDER_SIGN_DESCRIPTOR.equals(method.desc)) {
+
+                /*
+                 * Already transformed. Avoid ever wrapping the class twice.
+                 */
+                return basicClass;
+            }
+
+            if (!ANGELICA_RENDER_SIGN_NAME.equals(method.name)
+                    || !ANGELICA_RENDER_SIGN_DESCRIPTOR.equals(method.desc)) {
+
+                continue;
+            }
+
+            if (originalRenderSign != null) {
+                logger.error(
+                        "Found multiple Angelica renderSign(ModelSign) methods. "
+                                + "Sign editor compatibility patch "
+                                + "was not installed!"
+                );
+
+                return basicClass;
+            }
+
+            originalRenderSign = method;
+        }
+
+        if (originalRenderSign == null) {
+            logger.error(
+                    "Could not find Angelica VanillaModelMeshes.renderSign"
+                            + "(ModelSign). Sign editor compatibility patch "
+                            + "was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        int originalAccess = originalRenderSign.access;
+        String originalSignature = originalRenderSign.signature;
+        String[] originalExceptions =
+                originalRenderSign.exceptions == null
+                        ? null
+                        : originalRenderSign.exceptions.toArray(
+                        new String[originalRenderSign.exceptions.size()]
+                );
+
+        /*
+         * Preserve Angelica's complete original cached implementation under
+         * another name. The compatibility helper calls this method whenever
+         * the vanilla sign-editor fallback is not required.
+         */
+        originalRenderSign.name =
+                ANGELICA_RENDER_SIGN_CACHED_NAME;
+
+        MethodNode wrapper = new MethodNode(
+                originalAccess,
+                ANGELICA_RENDER_SIGN_NAME,
+                ANGELICA_RENDER_SIGN_DESCRIPTOR,
+                originalSignature,
+                originalExceptions
+        );
+
+        wrapper.instructions.add(
+                new VarInsnNode(Opcodes.ALOAD, 0)
+        );
+
+        wrapper.instructions.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        ANGELICA_SIGN_PATCH_OWNER,
+                        ANGELICA_RENDER_SIGN_NAME,
+                        ANGELICA_RENDER_SIGN_DESCRIPTOR
+                )
+        );
+
+        wrapper.instructions.add(
+                new InsnNode(Opcodes.RETURN)
+        );
+
+        /*
+         * ClassWriter(0) does not calculate these values.
+         * The wrapper only holds one ModelSign reference.
+         */
+        wrapper.maxStack = 1;
+        wrapper.maxLocals = 1;
+
+        classNode.methods.add(wrapper);
+
+        logger.info(
+                "Successfully wrapped Angelica cached sign rendering "
+                        + "for sign editor compatibility!"
+        );
+
+        return writeClass(classNode);
     }
 
     private static ClassNode readClass(byte[] basicClass) {
