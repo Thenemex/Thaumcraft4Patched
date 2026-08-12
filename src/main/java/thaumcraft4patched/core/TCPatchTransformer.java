@@ -24,6 +24,38 @@ public class TCPatchTransformer implements IClassTransformer {
     private static final String ENDER_ZOO_SPAWN_HANDLER_TARGET =
             "crazypants.enderzoo.spawn.MobSpawnEventHandler";
 
+    private static final String WITCHERY_RAISE_LAND_TARGET =
+            "com.emoniph.witchery.brewing.action.effect.BrewActionRaiseLand";
+
+    private static final String WITCHERY_RAISE_LAND_METHOD =
+            "doApplyToBlock";
+
+    private static final String WITCHERY_RAISE_LAND_METHOD_DESCRIPTOR =
+            "(Lnet/minecraft/world/World;"
+                    + "IIILnet/minecraftforge/common/util/ForgeDirection;"
+                    + "ILcom/emoniph/witchery/brewing/ModifiersEffect;"
+                    + "Lnet/minecraft/item/ItemStack;)V";
+
+    private static final String WORLD_OWNER =
+            "net/minecraft/world/World";
+
+    private static final String SET_BLOCK_TO_AIR_DESCRIPTOR =
+            "(III)Z";
+
+    private static final String SET_BLOCK_DESCRIPTOR =
+            "(IIILnet/minecraft/block/Block;II)Z";
+
+    private static final String RAISE_LAND_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/"
+                    + "WitcheryRaiseLandProtectionPatch";
+
+    private static final String PATCH_SET_BLOCK_TO_AIR_DESCRIPTOR =
+            "(Lnet/minecraft/world/World;III)Z";
+
+    private static final String PATCH_SET_BLOCK_DESCRIPTOR =
+            "(Lnet/minecraft/world/World;"
+                    + "IIILnet/minecraft/block/Block;II)Z";
+
     private static final String OLD_GOLEM_FAKE_PLAYER_NAME =
             "FakeThaumcraftGolem";
 
@@ -102,6 +134,10 @@ public class TCPatchTransformer implements IClassTransformer {
 
         if (ENDER_ZOO_SPAWN_HANDLER_TARGET.equals(transformedName)) {
             return transformEnderZooSpawnHandler(basicClass);
+        }
+
+        if (WITCHERY_RAISE_LAND_TARGET.equals(transformedName)) {
+            return transformWitcheryRaiseLandClass(basicClass);
         }
 
         return basicClass;
@@ -327,6 +363,115 @@ public class TCPatchTransformer implements IClassTransformer {
         }
 
         return false;
+    }
+
+    /**
+     * Redirects only Witchery Raise Land's source removal and destination
+     * placement calls through our protection helper.
+     *
+     * Both calls must be found before either one is modified. This prevents a
+     * partial transformation from creating block loss or duplication.
+     */
+    private byte[] transformWitcheryRaiseLandClass(byte[] basicClass) {
+        ClassNode classNode = readClass(basicClass);
+        MethodNode targetMethod = null;
+
+        for (MethodNode method : classNode.methods) {
+            if (WITCHERY_RAISE_LAND_METHOD.equals(method.name)
+                    && WITCHERY_RAISE_LAND_METHOD_DESCRIPTOR.equals(
+                    method.desc)) {
+
+                targetMethod = method;
+                break;
+            }
+        }
+
+        if (targetMethod == null) {
+            logger.error(
+                    "Could not find Witchery BrewActionRaiseLand."
+                            + "doApplyToBlock. Raise Land protection "
+                            + "was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        if (!patchWitcheryRaiseLandBlockMoves(targetMethod)) {
+            logger.error(
+                    "Could not find both Witchery Raise Land block "
+                            + "movement calls. Raise Land protection "
+                            + "was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        logger.info(
+                "Successfully transformed Witchery Raise Land block "
+                        + "movement calls for protected-block handling!"
+        );
+
+        return writeClass(classNode);
+    }
+
+    private boolean patchWitcheryRaiseLandBlockMoves(
+            MethodNode method) {
+
+        MethodInsnNode removeBlockCall = null;
+        MethodInsnNode placeBlockCall = null;
+
+        for (AbstractInsnNode instruction
+                : method.instructions.toArray()) {
+
+            if (!(instruction instanceof MethodInsnNode)) {
+                continue;
+            }
+
+            MethodInsnNode methodCall =
+                    (MethodInsnNode) instruction;
+
+            if (methodCall.getOpcode() != Opcodes.INVOKEVIRTUAL
+                    || !WORLD_OWNER.equals(methodCall.owner)) {
+                continue;
+            }
+
+            if (SET_BLOCK_TO_AIR_DESCRIPTOR.equals(methodCall.desc)
+                    && ("func_147468_f".equals(methodCall.name)
+                    || "setBlockToAir".equals(methodCall.name))) {
+
+                removeBlockCall = methodCall;
+                continue;
+            }
+
+            if (SET_BLOCK_DESCRIPTOR.equals(methodCall.desc)
+                    && ("func_147465_d".equals(methodCall.name)
+                    || "setBlock".equals(methodCall.name))) {
+
+                placeBlockCall = methodCall;
+            }
+        }
+
+        /*
+         * Never partially transform Raise Land. Preventing only one half of
+         * the move could destroy blocks or duplicate protected blocks.
+         */
+        if (removeBlockCall == null || placeBlockCall == null) {
+            return false;
+        }
+
+        removeBlockCall.setOpcode(Opcodes.INVOKESTATIC);
+        removeBlockCall.owner = RAISE_LAND_PATCH_OWNER;
+        removeBlockCall.name = "setBlockToAir";
+        removeBlockCall.desc =
+                PATCH_SET_BLOCK_TO_AIR_DESCRIPTOR;
+
+        placeBlockCall.setOpcode(Opcodes.INVOKESTATIC);
+        placeBlockCall.owner = RAISE_LAND_PATCH_OWNER;
+        placeBlockCall.name = "setBlock";
+        placeBlockCall.desc =
+                PATCH_SET_BLOCK_DESCRIPTOR;
+
+        return true;
     }
 
     private static ClassNode readClass(byte[] basicClass) {

@@ -13,6 +13,7 @@ public class Config extends AConfig {
     public static boolean fldEnabled, thaumcraftMagicalLeavesFastDecayPatchEnabled, taintedMagicWarpwoodLeavesFastDecayPatchEnabled;
     public static boolean tcclmEnabled, thaumaturgeWitcheryGuardNonAggressionPatchEnabled;
     public static boolean tc4Enabled, boneBowResearchPatchEnabled, golemLumberCoreWoodHardnessPatchEnabled, nullResearchParentsPatchEnabled;
+    public static boolean witcheryEnabled, witcheryRaiseLandBedrockProtectionPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
     public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled, removeNecroInfusionRecipe;
@@ -23,7 +24,7 @@ public class Config extends AConfig {
 
     protected void loadConfig() {
         String mods = "Mods", mc = "Minecraft", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
-                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium";
+                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery";
 
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Minecraft");
@@ -31,6 +32,7 @@ public class Config extends AConfig {
         hlcEnabled = newEntry(mods, "Harvest Level Config");
         fldEnabled = newEntry(mods, "Fast Leaf Decay");
         tcclmEnabled = newEntry(mods, "Thaumic Concilium");
+        witcheryEnabled = newEntry(mods, "Witchery");
         tc4Enabled = newEntry(mods, "Thaumcraft 4");
         tbEnabled = newEntry(mods, "Thaumic Bases");
         txEnabled = newEntry(mods, "Thaumic Exploration");
@@ -54,6 +56,13 @@ public class Config extends AConfig {
 
         comment(tcon, "You can disable/enable compatibility patches for Thaumic Concilium here");
         thaumaturgeWitcheryGuardNonAggressionPatchEnabled = newEntry(tcon, "WitcheryGuardNonAggression", "Stops Thaumic Concilium Thaumaturges and Witchery Village Guards from fighting each other");
+
+        comment(witchery, "You can disable/enable bug patches for Witchery here");
+        witcheryRaiseLandBedrockProtectionPatchEnabled = newEntry(
+                witchery,
+                "RaiseLandBedrockProtection",
+                "Prevents the Raise Land brew from moving or duplicating bedrock while preserving its normal behaviour for other blocks"
+        );
 
         comment(tc4, "You can disable/enable bug patches for Thaumcraft 4 here");
         boneBowResearchPatchEnabled = newEntry(tc4,"HiddenBoneBowResearch", "Removes the hidden property of the research -> it will be unlocked when the player discover the Telum aspect");
