@@ -418,7 +418,7 @@ public class TCPatchTransformer implements IClassTransformer {
     /**
      * Redirects only Witchery Raise Land's source removal and destination
      * placement calls through our protection helper.
-     *
+     * <p>
      * Both calls must be found before either one is modified. This prevents a
      * partial transformation from creating block loss or duplication.
      */
@@ -527,7 +527,7 @@ public class TCPatchTransformer implements IClassTransformer {
     /**
      * Wraps Angelica's cached vanilla sign renderer with our compatibility
      * helper while preserving the original cached implementation.
-     *
+     * <p>
      * The original renderSign(ModelSign) method is renamed and a same-signature
      * wrapper is installed in its place. Normal rendering therefore continues
      * to use Angelica's cached implementation, while the helper can selectively
@@ -582,7 +582,7 @@ public class TCPatchTransformer implements IClassTransformer {
                 originalRenderSign.exceptions == null
                         ? null
                         : originalRenderSign.exceptions.toArray(
-                        new String[originalRenderSign.exceptions.size()]
+                        new String[0]
                 );
 
         /*
@@ -605,6 +605,7 @@ public class TCPatchTransformer implements IClassTransformer {
                 new VarInsnNode(Opcodes.ALOAD, 0)
         );
 
+        //noinspection deprecation
         wrapper.instructions.add(
                 new MethodInsnNode(
                         Opcodes.INVOKESTATIC,
@@ -638,11 +639,11 @@ public class TCPatchTransformer implements IClassTransformer {
     /**
      * Sends the block read of the Dark Shrine foundation loop through our
      * helper, so the loop gets a floor.
-     *
+     * <p>
      * The loop keeps the vertical offset in a local variable that starts at -8
      * and goes down by one for each layer. The helper needs that offset, so the
      * offset is pushed as an extra argument and the read becomes a static call.
-     *
+     * <p>
      * Only a read that feeds a comparison with air, and that uses a counter the
      * method lowers by one, is treated as the foundation loop. A method with
      * more than one read of that shape is left alone.
@@ -787,7 +788,7 @@ public class TCPatchTransformer implements IClassTransformer {
     /**
      * Reads back the arguments of the block read and gives the local variable
      * that holds the vertical offset of the loop.
-     *
+     * <p>
      * The expected shape, in normal order, is the world, then three sums of two
      * local variables. The second variable of the middle sum is the offset.
      */
