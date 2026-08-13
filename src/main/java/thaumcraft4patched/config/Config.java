@@ -8,8 +8,8 @@ public class Config extends AConfig {
 
     public static boolean mcEnabled, oakWoodenSlabBuggedRecipePatchEnabled;
     public static boolean angelicaEnabled, angelicaSignEditorCompatibilityPatchEnabled;
-    public static boolean mgckEnabled, opaqueFogNetherDarkShrineJava25PatchEnabled;
-    public static int mgckEntropyFogIntensity, mgckEntropyFogCloseness;
+    public static boolean mgckEnabled, opaqueFogNetherDarkShrineJava25PatchEnabled, endlessDarkShrineFoundationPatchEnabled;
+    public static int mgckEntropyFogIntensity, mgckEntropyFogCloseness, mgckDarkShrineFoundationDepthLimit;
     public static boolean hlcEnabled, excavationFocusHlcCompatibilityPatchEnabled, primalCrusherHlcCompatibilityPatchEnabled;
     public static boolean fldEnabled, thaumcraftMagicalLeavesFastDecayPatchEnabled, taintedMagicWarpwoodLeavesFastDecayPatchEnabled;
     public static boolean tcclmEnabled, thaumaturgeWitcheryGuardNonAggressionPatchEnabled;
@@ -53,6 +53,8 @@ public class Config extends AConfig {
         opaqueFogNetherDarkShrineJava25PatchEnabled = newEntry(mgck, "OpaqueFogNetherDarkShrineJava25", "Removes the opaque fog inside the Dark Shrine, when using higher Java version");
         mgckEntropyFogIntensity = newEntry(mgck, "EntropyFogIntensity", 4, 0, 10, "Controls the Dark Shrine entropy fog intensity. 0 is the lightest, 4 is the recommended default, and 10 is the strongest.");
         mgckEntropyFogCloseness = newEntry(mgck, "EntropyFogCloseness", 5, 0, 10, "Controls how close the Dark Shrine entropy fog appears around the player. 0 keeps the fog furthest away, 5 preserves the normal patched distance, and 10 brings the fog closest.");
+        endlessDarkShrineFoundationPatchEnabled = newEntry(mgck, "EndlessDarkShrineFoundation", "Gives the Dark Shrine foundation a floor. Without it the world generator can fill air forever when a nearby chunk is not generated yet, which holds the server thread at full load with no crash and no log line.");
+        mgckDarkShrineFoundationDepthLimit = newEntry(mgck, "DarkShrineFoundationDepthLimit", 20, 8, 128, "How far the Dark Shrine foundation can reach under the shrine, in blocks. The foundation starts 8 blocks under the shrine, so 20 gives 12 layers of fill.");
 
         comment(hlc, "You can disable/enable compatibility patches for Harvest Level Config here");
         excavationFocusHlcCompatibilityPatchEnabled = newEntry(hlc, "ExcavationFocusDiamondTools", "While the Excavation Focus magic is actively mining, treats it as a diamond/Thaumium-level pickaxe, axe, and shovel for Harvest Level Config and compatible tool checks. Physically mining with the wand itself remains equivalent to using an empty hand.");

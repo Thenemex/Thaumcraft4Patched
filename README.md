@@ -8,6 +8,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
 - Thaumic Exploration add 16 floating candles items/blocks, but the recipe for the black one was crashing the game -> patched !
 * Magic Cookies used to give a fully opaque screen when entering a Nether Dark Shrine structure, when using higher Java version
 * Magic Cookies entropy fog intensity can now be configured from 0 to 10, with 4 matching the recommended default behaviour.
+* Magic Cookies Dark Shrine generation could fill a column of air without an end, when the shrine reached into a chunk that was not generated yet. The server thread then stayed at full load with no crash and no log line. The foundation now stops at a set depth, which you can configure.
 * Adds Harvest Level Config compatibility for:
   * Thaumcraft's Excavation Focus
   * Thaumcraft's Primal Crusher
