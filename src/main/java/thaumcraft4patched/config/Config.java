@@ -8,7 +8,8 @@ public class Config extends AConfig {
 
     public static boolean mcEnabled, oakWoodenSlabBuggedRecipePatchEnabled;
     public static boolean angelicaEnabled, angelicaSignEditorCompatibilityPatchEnabled;
-    public static boolean mgckEnabled, opaqueFogNetherDarkShrineJava25PatchEnabled, endlessDarkShrineFoundationPatchEnabled;
+    public static boolean mgckEnabled, opaqueFogNetherDarkShrineJava25PatchEnabled,
+            endlessDarkShrineFoundationPatchEnabled, golemDecorationIconBoundsPatchEnabled;
     public static int mgckEntropyFogIntensity, mgckEntropyFogCloseness, mgckDarkShrineFoundationDepthLimit;
     public static boolean hlcEnabled, excavationFocusHlcCompatibilityPatchEnabled, primalCrusherHlcCompatibilityPatchEnabled;
     public static boolean fldEnabled, thaumcraftMagicalLeavesFastDecayPatchEnabled, taintedMagicWarpwoodLeavesFastDecayPatchEnabled;
@@ -17,7 +18,8 @@ public class Config extends AConfig {
     public static boolean witcheryEnabled, witcheryRaiseLandBedrockProtectionPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
-    public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled, removeNecroInfusionRecipe;
+    public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled,
+            removeNecroInfusionRecipe, oblivionJarHarvestPatchEnabled;
 
     public Config(FMLPreInitializationEvent event) {
         super(Thaumcraft4Patched.modName, event, "1.6.1");
@@ -41,8 +43,7 @@ public class Config extends AConfig {
 
         comment(mc, "You can disable/enable bug patches for vanilla Minecraft here");
         oakWoodenSlabBuggedRecipePatchEnabled = newEntry(mc, "OakWoodenSlab", "Removes the recipe that overtake over all other wooden slabs, allowing to make only oak wooden slabs");
-
-        comment(angelica, "You can disable/enable compatibility patches for Angelica here");
+comment(angelica, "You can disable/enable compatibility patches for Angelica here");
         angelicaSignEditorCompatibilityPatchEnabled = newEntry(
                 angelica,
                 "SignEditorCompatibility",
@@ -50,6 +51,11 @@ public class Config extends AConfig {
         );
 
         comment(mgck, "You can disable/enable bug patches for Magic Cookies here");
+        golemDecorationIconBoundsPatchEnabled = newEntry(
+                mgck,
+                "GolemDecorationIconBounds",
+                "Prevents invalid Golem Decoration metadata from crashing icon lookups used by NEI and other mods"
+        );
         opaqueFogNetherDarkShrineJava25PatchEnabled = newEntry(mgck, "OpaqueFogNetherDarkShrineJava25", "Removes the opaque fog inside the Dark Shrine, when using higher Java version");
         mgckEntropyFogIntensity = newEntry(mgck, "EntropyFogIntensity", 4, 0, 10, "Controls the Dark Shrine entropy fog intensity. 0 is the lightest, 4 is the recommended default, and 10 is the strongest.");
         mgckEntropyFogCloseness = newEntry(mgck, "EntropyFogCloseness", 5, 0, 10, "Controls how close the Dark Shrine entropy fog appears around the player. 0 keeps the fog furthest away, 5 preserves the normal patched distance, and 10 brings the fog closest.");
@@ -86,7 +92,12 @@ public class Config extends AConfig {
 
         comment(tx, "You can disable/enable bug patches for Thaumic Exploration here");
         blackFloatingCandleRecipePatchEnabled = newEntry(tx, "BlackFloatingCandle", "This patches the crash caused by trying to craft a Black Floating Candle");
-        removeNecroInfusionRecipe = newEntry(tx, "RemoveNecroInfusionRecipe", "Remove the buggy infusion recipe for the \"NecroAltar\" with unregistered/null output itemAlter");
+
+        oblivionJarHarvestPatchEnabled = newEntry(
+                tx,
+                "OblivionJarHarvest",
+                "Allows the Oblivion Jar to be harvested and recovered instead of dropping nothing"
+        );
 
         comment(wg, "You can disable/enable bug patches for Witching Gadgets addon here");
         missingPrereqs_WitchingWearables = newEntry(wg, "MissingPrereqs_WitchingWearables", "Adds the missing prereq(s) for the \"Witching Wearables\" research");

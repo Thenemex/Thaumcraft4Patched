@@ -157,6 +157,50 @@ public class TCPatchTransformer implements IClassTransformer {
             "(Lnet/minecraft/world/World;IIII)"
                     + "Lnet/minecraft/block/Block;";
 
+    private static final String MAGIC_COOKIES_GOLEM_DECORATION_TARGET =
+            "tschallacka.magiccookies.entities.living.golem.ItemGolemDecoration";
+
+    private static final String GOLEM_DECORATION_ICON_DESCRIPTOR =
+            "(I)Lnet/minecraft/util/IIcon;";
+
+    private static final String GOLEM_DECORATION_ICON_FIELD_DESCRIPTOR =
+            "[Lnet/minecraft/util/IIcon;";
+
+    private static final String GOLEM_DECORATION_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/"
+                    + "MagicCookiesGolemDecorationIconPatch";
+
+    private static final String GOLEM_DECORATION_PATCH_DESCRIPTOR =
+            "([Lnet/minecraft/util/IIcon;I)Lnet/minecraft/util/IIcon;";
+
+    private static final String THAUMIC_EXPLORATION_OBLIVION_JAR_TARGET =
+            "flaxbeard.thaumicexploration.block.BlockTrashJar";
+
+    private static final String OBLIVION_JAR_GET_DROPS_NAME =
+            "getDrops";
+
+    private static final String OBLIVION_JAR_GET_DROPS_DESCRIPTOR =
+            "(Lnet/minecraft/world/World;IIIII)Ljava/util/ArrayList;";
+
+    private static final String OBLIVION_JAR_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/"
+                    + "ThaumicExplorationOblivionJarHarvestPatch";
+
+    private static final String OBLIVION_JAR_PATCH_DESCRIPTOR =
+            "(Lnet/minecraft/block/Block;I)Ljava/util/ArrayList;";
+    private static final String THAUMCRAFT_BLOCK_JAR_TARGET =
+            "thaumcraft.common.blocks.BlockJar";
+
+    private static final String BLOCK_JAR_HARVEST_DESCRIPTOR =
+            "(Lnet/minecraft/world/World;IIIILnet/minecraft/entity/player/EntityPlayer;)V";
+
+    private static final String BLOCK_DROP_AS_ITEM_DESCRIPTOR =
+            "(Lnet/minecraft/world/World;IIIII)V";
+
+    private static final String PATCH_DROP_AS_ITEM_DESCRIPTOR =
+            "(Lnet/minecraft/block/Block;"
+                    + "Lnet/minecraft/world/World;IIIII)V";
+
     @Override
     public byte[] transform(
             String name,
@@ -189,6 +233,18 @@ public class TCPatchTransformer implements IClassTransformer {
 
         if (MAGIC_COOKIES_DARK_SHRINE_TARGET.equals(transformedName)) {
             return transformMagicCookiesDarkShrine(basicClass);
+        }
+
+        if (MAGIC_COOKIES_GOLEM_DECORATION_TARGET.equals(transformedName)) {
+            return transformMagicCookiesGolemDecoration(basicClass);
+        }
+
+        if (THAUMCRAFT_BLOCK_JAR_TARGET.equals(transformedName)) {
+            return transformThaumcraftBlockJar(basicClass);
+        }
+
+        if (THAUMIC_EXPLORATION_OBLIVION_JAR_TARGET.equals(transformedName)) {
+            return transformThaumicExplorationOblivionJar(basicClass);
         }
         return basicClass;
     }
@@ -687,6 +743,142 @@ public class TCPatchTransformer implements IClassTransformer {
         return writeClass(classNode);
     }
 
+    /**
+     * Replaces Magic Cookies' unsafe Golem Decoration icon-array lookup with a
+     * bounds-safe helper.
+     *
+     * The original method is:
+     *
+     * return this.icon[metadata];
+     *
+     * Only that exact known implementation is transformed. If Magic Cookies
+     * changes the method in another version, the class is left untouched.
+     */
+    private byte[] transformMagicCookiesGolemDecoration(
+            byte[] basicClass) {
+
+        ClassNode classNode = readClass(basicClass);
+        MethodNode targetMethod = null;
+
+        for (MethodNode method : classNode.methods) {
+            if (GOLEM_DECORATION_ICON_DESCRIPTOR.equals(method.desc)
+                    && ("func_77617_a".equals(method.name)
+                    || "getIconFromDamage".equals(method.name))) {
+
+                if (targetMethod != null) {
+                    logger.error(
+                            "Found multiple Magic Cookies Golem Decoration "
+                                    + "icon lookup methods. The icon bounds "
+                                    + "patch was not installed!"
+                    );
+
+                    return basicClass;
+                }
+
+                targetMethod = method;
+            }
+        }
+
+        if (targetMethod == null) {
+            logger.error(
+                    "Could not find Magic Cookies ItemGolemDecoration "
+                            + "icon lookup. The icon bounds patch "
+                            + "was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        AbstractInsnNode[] instructions =
+                targetMethod.instructions.toArray();
+
+        AbstractInsnNode[] realInstructions =
+                new AbstractInsnNode[5];
+
+        int realCount = 0;
+
+        for (AbstractInsnNode instruction : instructions) {
+            if (instruction.getOpcode() < 0) {
+                continue;
+            }
+
+            if (realCount >= realInstructions.length) {
+                logger.error(
+                        "Magic Cookies ItemGolemDecoration icon lookup "
+                                + "has an unexpected bytecode shape. "
+                                + "The icon bounds patch was not installed!"
+                );
+
+                return basicClass;
+            }
+
+            realInstructions[realCount++] = instruction;
+        }
+
+        if (realCount != 5
+                || realInstructions[0].getOpcode() != Opcodes.ALOAD
+                || realInstructions[1].getOpcode() != Opcodes.GETFIELD
+                || realInstructions[2].getOpcode() != Opcodes.ILOAD
+                || realInstructions[3].getOpcode() != Opcodes.AALOAD
+                || realInstructions[4].getOpcode() != Opcodes.ARETURN) {
+
+            logger.error(
+                    "Magic Cookies ItemGolemDecoration icon lookup "
+                            + "no longer matches the expected implementation. "
+                            + "The icon bounds patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        VarInsnNode loadThis =
+                (VarInsnNode) realInstructions[0];
+
+        FieldInsnNode iconField =
+                (FieldInsnNode) realInstructions[1];
+
+        VarInsnNode loadMetadata =
+                (VarInsnNode) realInstructions[2];
+
+        if (loadThis.var != 0
+                || loadMetadata.var != 1
+                || !"icon".equals(iconField.name)
+                || !GOLEM_DECORATION_ICON_FIELD_DESCRIPTOR.equals(
+                iconField.desc)) {
+
+            logger.error(
+                    "Magic Cookies ItemGolemDecoration icon lookup "
+                            + "uses an unexpected field or argument layout. "
+                            + "The icon bounds patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        //noinspection deprecation
+        targetMethod.instructions.set(
+                realInstructions[3],
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        GOLEM_DECORATION_PATCH_OWNER,
+                        "getIcon",
+                        GOLEM_DECORATION_PATCH_DESCRIPTOR
+                )
+        );
+
+        /*
+         * The original AALOAD consumed an icon array and integer index and
+         * returned an IIcon. The helper has the same stack effect, so maxStack
+         * and frames remain valid.
+         */
+        logger.info(
+                "Successfully transformed Magic Cookies Golem Decoration "
+                        + "icon lookup with metadata bounds protection!"
+        );
+
+        return writeClass(classNode);
+    }
+
     private boolean patchDarkShrineFoundationLoop(MethodNode method) {
         MethodInsnNode foundationBlockRead = null;
         int foundationCounter = -1;
@@ -870,6 +1062,253 @@ public class TCPatchTransformer implements IClassTransformer {
         }
 
         return current;
+    }
+
+    /**
+     * Routes Thaumcraft BlockJar's explicit early drop through the Oblivion Jar
+     * harvest helper.
+     *
+     * The helper suppresses that first drop only for Thaumic Exploration's
+     * Oblivion Jar while forwarding the call unchanged for every other jar.
+     */
+    private byte[] transformThaumcraftBlockJar(
+            byte[] basicClass) {
+
+        ClassNode classNode = readClass(basicClass);
+        MethodNode harvestMethod = null;
+
+        for (MethodNode method : classNode.methods) {
+            if (BLOCK_JAR_HARVEST_DESCRIPTOR.equals(method.desc)
+                    && ("func_149681_a".equals(method.name)
+                    || "harvestBlock".equals(method.name))) {
+
+                harvestMethod = method;
+                break;
+            }
+        }
+
+        if (harvestMethod == null) {
+            logger.error(
+                    "Could not find Thaumcraft BlockJar.harvestBlock. "
+                            + "Oblivion Jar duplicate-drop protection "
+                            + "was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        MethodInsnNode dropCall = null;
+
+        for (AbstractInsnNode instruction
+                : harvestMethod.instructions.toArray()) {
+
+            if (!(instruction instanceof MethodInsnNode)) {
+                continue;
+            }
+
+            MethodInsnNode methodCall =
+                    (MethodInsnNode) instruction;
+
+            if (methodCall.getOpcode() != Opcodes.INVOKEVIRTUAL
+                    || !BLOCK_DROP_AS_ITEM_DESCRIPTOR.equals(methodCall.desc)
+                    || !("func_149697_b".equals(methodCall.name)
+                    || "dropBlockAsItem".equals(methodCall.name))) {
+
+                continue;
+            }
+
+            /*
+             * There should be exactly one explicit drop in BlockJar.harvestBlock.
+             * Refuse to guess if the implementation changes.
+             */
+            if (dropCall != null) {
+                logger.error(
+                        "Found multiple BlockJar dropBlockAsItem calls. "
+                                + "Oblivion Jar duplicate-drop protection "
+                                + "was not installed!"
+                );
+
+                return basicClass;
+            }
+
+            dropCall = methodCall;
+        }
+
+        if (dropCall == null) {
+            logger.error(
+                    "Could not find BlockJar's early dropBlockAsItem call. "
+                            + "Oblivion Jar duplicate-drop protection "
+                            + "was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        dropCall.setOpcode(Opcodes.INVOKESTATIC);
+        dropCall.owner = OBLIVION_JAR_PATCH_OWNER;
+        dropCall.name = "dropBlockAsItem";
+        dropCall.desc = PATCH_DROP_AS_ITEM_DESCRIPTOR;
+
+        logger.info(
+                "Successfully wrapped Thaumcraft BlockJar's early drop "
+                        + "for Oblivion Jar compatibility!"
+        );
+
+        return writeClass(classNode);
+    }
+
+    /**
+     * Restores a recoverable drop for Thaumic Exploration's Oblivion Jar.
+     * The original BlockTrashJar.getDrops implementation intentionally returns
+     * an empty ArrayList. We only replace it if its bytecode still matches that
+     * known implementation, preventing an unsafe patch if Thaumic Exploration
+     * changes the method in another version.
+     */
+    private byte[] transformThaumicExplorationOblivionJar(
+            byte[] basicClass) {
+
+        ClassNode classNode = readClass(basicClass);
+        MethodNode getDropsMethod = null;
+
+        for (MethodNode method : classNode.methods) {
+            if (OBLIVION_JAR_GET_DROPS_NAME.equals(method.name)
+                    && OBLIVION_JAR_GET_DROPS_DESCRIPTOR.equals(method.desc)) {
+
+                getDropsMethod = method;
+                break;
+            }
+        }
+
+        if (getDropsMethod == null) {
+            logger.error(
+                    "Could not find Thaumic Exploration "
+                            + "BlockTrashJar.getDrops. Oblivion Jar harvest "
+                            + "patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        if (!isOriginalOblivionJarEmptyDropsMethod(getDropsMethod)) {
+            logger.error(
+                    "Thaumic Exploration BlockTrashJar.getDrops no longer "
+                            + "matches the expected empty-drop implementation. "
+                            + "Oblivion Jar harvest patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        getDropsMethod.instructions.clear();
+        getDropsMethod.tryCatchBlocks.clear();
+
+        if (getDropsMethod.localVariables != null) {
+            getDropsMethod.localVariables.clear();
+        }
+
+        /*
+         * Argument layout:
+         *
+         * 0 = this BlockTrashJar
+         * 1 = World
+         * 2 = x
+         * 3 = y
+         * 4 = z
+         * 5 = metadata
+         * 6 = fortune
+         */
+
+        getDropsMethod.instructions.add(
+                new VarInsnNode(Opcodes.ALOAD, 0)
+        );
+
+        getDropsMethod.instructions.add(
+                new VarInsnNode(Opcodes.ILOAD, 5)
+        );
+
+        //noinspection deprecation
+        getDropsMethod.instructions.add(
+                new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        OBLIVION_JAR_PATCH_OWNER,
+                        OBLIVION_JAR_GET_DROPS_NAME,
+                        OBLIVION_JAR_PATCH_DESCRIPTOR
+                )
+        );
+
+        getDropsMethod.instructions.add(
+                new InsnNode(Opcodes.ARETURN)
+        );
+
+        getDropsMethod.maxStack = 2;
+        getDropsMethod.maxLocals = Math.max(
+                getDropsMethod.maxLocals,
+                7
+        );
+
+        logger.info(
+                "Successfully transformed Thaumic Exploration's "
+                        + "Oblivion Jar drop handling! yippeee"
+        );
+
+        return writeClass(classNode);
+    }
+
+    /**
+     * Verifies the known Thaumic Exploration 1.1-53 implementation :D :
+     */
+    private static boolean isOriginalOblivionJarEmptyDropsMethod(
+            MethodNode method) {
+
+        int[] expectedOpcodes = {
+                Opcodes.NEW,
+                Opcodes.DUP,
+                Opcodes.INVOKESPECIAL,
+                Opcodes.ASTORE,
+                Opcodes.ALOAD,
+                Opcodes.ARETURN
+        };
+
+        int opcodeIndex = 0;
+
+        for (AbstractInsnNode instruction
+                : method.instructions.toArray()) {
+
+            int opcode = instruction.getOpcode();
+
+            /*
+             * Ignore labels, line numbers and frames.
+             */
+            if (opcode < 0) {
+                continue;
+            }
+
+            if (opcodeIndex >= expectedOpcodes.length
+                    || opcode != expectedOpcodes[opcodeIndex]) {
+
+                return false;
+            }
+
+            if (opcode == Opcodes.INVOKESPECIAL) {
+                if (!(instruction instanceof MethodInsnNode)) {
+                    return false;
+                }
+
+                MethodInsnNode constructorCall =
+                        (MethodInsnNode) instruction;
+
+                if (!"java/util/ArrayList".equals(constructorCall.owner)
+                        || !"<init>".equals(constructorCall.name)
+                        || !"()V".equals(constructorCall.desc)) {
+
+                    return false;
+                }
+            }
+
+            opcodeIndex++;
+        }
+
+        return opcodeIndex == expectedOpcodes.length;
     }
 
     private static ClassNode readClass(byte[] basicClass) {
