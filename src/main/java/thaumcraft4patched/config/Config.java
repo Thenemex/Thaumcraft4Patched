@@ -10,6 +10,7 @@ public class Config extends AConfig {
     public static boolean angelicaEnabled, angelicaSignEditorCompatibilityPatchEnabled;
     public static boolean mgckEnabled, opaqueFogNetherDarkShrineJava25PatchEnabled,
             endlessDarkShrineFoundationPatchEnabled, golemDecorationIconBoundsPatchEnabled;
+    public static boolean mtEnabled, mineTweakerServerCommandRollbackPatchEnabled;
     public static int mgckEntropyFogIntensity, mgckEntropyFogCloseness, mgckDarkShrineFoundationDepthLimit;
     public static boolean hlcEnabled, excavationFocusHlcCompatibilityPatchEnabled, primalCrusherHlcCompatibilityPatchEnabled;
     public static boolean fldEnabled, thaumcraftMagicalLeavesFastDecayPatchEnabled, taintedMagicWarpwoodLeavesFastDecayPatchEnabled;
@@ -27,11 +28,12 @@ public class Config extends AConfig {
 
     protected void loadConfig() {
         String mods = "Mods", mc = "Minecraft", angelica = "Angelica", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
-                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery";
+                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3";
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Minecraft");
         angelicaEnabled = newEntry(mods, "Angelica");
         mgckEnabled = newEntry(mods, "Magic Cookies");
+        mtEnabled = newEntry(mods, "MineTweaker 3");
         hlcEnabled = newEntry(mods, "Harvest Level Config");
         fldEnabled = newEntry(mods, "Fast Leaf Decay");
         tcclmEnabled = newEntry(mods, "Thaumic Concilium");
@@ -51,6 +53,13 @@ comment(angelica, "You can disable/enable compatibility patches for Angelica her
         );
 
         comment(mgck, "You can disable/enable bug patches for Magic Cookies here");
+        comment(mt, "You can disable/enable bug patches for MineTweaker 3 here");
+
+        mineTweakerServerCommandRollbackPatchEnabled = newEntry(
+                mt,
+                "ServerCommandRollback",
+                "Prevents stale MineTweaker server command rollback from crashing when switching between singleplayer and multiplayer"
+        );
         golemDecorationIconBoundsPatchEnabled = newEntry(
                 mgck,
                 "GolemDecorationIconBounds",
