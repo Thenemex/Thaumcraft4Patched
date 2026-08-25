@@ -16,6 +16,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
   * Thaumcraft Greatwood Leaves
   * Thaumcraft Silverwood Leaves
   * Tainted Magic Warpwood Leaves
+* Gravestone gave a death note after every death while the keepInventory game rule was on, even with "enable_death_note" turned off in its config. The note now follows that entry.
 * Prevents Thaumic Concilium Thaumaturges and Witchery Village Guards from attacking each other, while preserving their normal combat behaviour against other mobs.
 - Adds the missing prereqs (forgotten by author) for some researches in TC4 addons :
   - Thaumic Bases :

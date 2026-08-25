@@ -161,6 +161,32 @@ public class TCPatchTransformer implements IClassTransformer {
             "(Lnet/minecraft/world/World;IIII)"
                     + "Lnet/minecraft/block/Block;";
 
+    private static final String GRAVESTONE_DEATH_EVENTS_TARGET =
+            "de.maxhenkel.gravestone.events.DeathEvents";
+
+    private static final String GRAVESTONE_GIVE_NOTE_NAME =
+            "givePlayerNote";
+
+    private static final String GRAVESTONE_GIVE_NOTE_DESCRIPTOR =
+            "(Lnet/minecraft/entity/player/EntityPlayer;)V";
+
+    private static final String INVENTORY_PLAYER_OWNER =
+            "net/minecraft/entity/player/InventoryPlayer";
+
+    private static final String ADD_ITEM_STACK_DESCRIPTOR =
+            "(Lnet/minecraft/item/ItemStack;)Z";
+
+    private static final String GRAVESTONE_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/"
+                    + "GravestoneDeathNotePatch";
+
+    private static final String PATCH_ADD_DEATH_NOTE_NAME =
+            "addDeathNote";
+
+    private static final String PATCH_ADD_DEATH_NOTE_DESCRIPTOR =
+            "(Lnet/minecraft/entity/player/InventoryPlayer;"
+                    + "Lnet/minecraft/item/ItemStack;)Z";
+
     private static final String MAGIC_COOKIES_GOLEM_DECORATION_TARGET =
             "tschallacka.magiccookies.entities.living.golem.ItemGolemDecoration";
 
@@ -277,6 +303,10 @@ public class TCPatchTransformer implements IClassTransformer {
 
         if (THAUMIC_EXPLORATION_OBLIVION_JAR_TARGET.equals(transformedName)) {
             return transformThaumicExplorationOblivionJar(basicClass);
+        }
+
+        if (GRAVESTONE_DEATH_EVENTS_TARGET.equals(transformedName)) {
+            return transformGravestoneDeathEvents(basicClass);
         }
         return basicClass;
     }
@@ -1548,6 +1578,101 @@ public class TCPatchTransformer implements IClassTransformer {
                 method.instructions.getFirst(),
                 guard
         );
+    }
+
+    /**
+     * Makes the Gravestone death note obey "enable_death_note".
+     *
+     * Gravestone gives a note from a death handler that runs when the
+     * keepInventory game rule is on. That handler never reads the config entry
+     * of its own mod, so a note arrives after every death. The inventory call
+     * of that handler now goes to the patch, which drops the note when the
+     * entry is off.
+     */
+    private byte[] transformGravestoneDeathEvents(byte[] basicClass) {
+        ClassNode classNode = readClass(basicClass);
+        MethodNode targetMethod = null;
+
+        for (MethodNode method : classNode.methods) {
+            if (GRAVESTONE_GIVE_NOTE_NAME.equals(method.name)
+                    && GRAVESTONE_GIVE_NOTE_DESCRIPTOR.equals(method.desc)
+                    && (method.access & Opcodes.ACC_STATIC) != 0) {
+
+                targetMethod = method;
+                break;
+            }
+        }
+
+        if (targetMethod == null) {
+            logger.error(
+                    "Could not find Gravestone DeathEvents.givePlayerNote. "
+                            + "The death note config patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        if (!patchDeathNoteInventoryCall(targetMethod)) {
+            logger.error(
+                    "Could not find the Gravestone death note inventory "
+                            + "call. The death note config patch was not "
+                            + "installed!"
+            );
+
+            return basicClass;
+        }
+
+        logger.info(
+                "Successfully transformed the Gravestone death note to "
+                        + "follow the enable_death_note config entry!"
+        );
+
+        return writeClass(classNode);
+    }
+
+    private boolean patchDeathNoteInventoryCall(MethodNode method) {
+        MethodInsnNode inventoryCall = null;
+
+        for (AbstractInsnNode instruction
+                : method.instructions.toArray()) {
+
+            if (!(instruction instanceof MethodInsnNode)) {
+                continue;
+            }
+
+            MethodInsnNode methodCall =
+                    (MethodInsnNode) instruction;
+
+            if (methodCall.getOpcode() != Opcodes.INVOKEVIRTUAL
+                    || !INVENTORY_PLAYER_OWNER.equals(methodCall.owner)
+                    || !ADD_ITEM_STACK_DESCRIPTOR.equals(methodCall.desc)
+                    || !("func_70441_a".equals(methodCall.name)
+                    || "addItemStackToInventory".equals(methodCall.name))) {
+
+                continue;
+            }
+
+            /*
+             * A second call of the same shape would leave the target
+             * unclear. Leave the class as it is.
+             */
+            if (inventoryCall != null) {
+                return false;
+            }
+
+            inventoryCall = methodCall;
+        }
+
+        if (inventoryCall == null) {
+            return false;
+        }
+
+        inventoryCall.setOpcode(Opcodes.INVOKESTATIC);
+        inventoryCall.owner = GRAVESTONE_PATCH_OWNER;
+        inventoryCall.name = PATCH_ADD_DEATH_NOTE_NAME;
+        inventoryCall.desc = PATCH_ADD_DEATH_NOTE_DESCRIPTOR;
+
+        return true;
     }
 
     private static ClassNode readClass(byte[] basicClass) {
