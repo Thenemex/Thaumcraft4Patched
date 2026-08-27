@@ -18,6 +18,7 @@ public class Config extends AConfig {
     public static boolean tcclmEnabled, thaumaturgeWitcheryGuardNonAggressionPatchEnabled;
     public static boolean tc4Enabled, boneBowResearchPatchEnabled, golemLumberCoreWoodHardnessPatchEnabled, nullResearchParentsPatchEnabled;
     public static boolean witcheryEnabled, witcheryRaiseLandBedrockProtectionPatchEnabled;
+    public static boolean gravestoneEnabled, deathNoteKeepInventoryPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
     public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled,
@@ -29,7 +30,7 @@ public class Config extends AConfig {
 
     protected void loadConfig() {
         String mods = "Mods", mc = "Minecraft", angelica = "Angelica", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
-                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3";
+                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3", gravestone = "Gravestone";
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Minecraft");
         angelicaEnabled = newEntry(mods, "Angelica");
@@ -39,6 +40,7 @@ public class Config extends AConfig {
         fldEnabled = newEntry(mods, "Fast Leaf Decay");
         tcclmEnabled = newEntry(mods, "Thaumic Concilium");
         witcheryEnabled = newEntry(mods, "Witchery");
+        gravestoneEnabled = newEntry(mods, "Gravestone");
         tc4Enabled = newEntry(mods, "Thaumcraft 4");
         tbEnabled = newEntry(mods, "Thaumic Bases");
         txEnabled = newEntry(mods, "Thaumic Exploration");
@@ -94,6 +96,13 @@ comment(angelica, "You can disable/enable compatibility patches for Angelica her
                 witchery,
                 "RaiseLandBedrockProtection",
                 "Prevents the Raise Land brew from moving or duplicating bedrock while preserving its normal behaviour for other blocks"
+        );
+
+        comment(gravestone, "You can disable/enable bug patches for Gravestone here");
+        deathNoteKeepInventoryPatchEnabled = newEntry(
+                gravestone,
+                "DeathNoteFollowsConfig",
+                "Makes the death note follow the \"enable_death_note\" entry of Gravestone while the keepInventory game rule is on. Without it the mod gives a note after every death, whatever that entry holds."
         );
 
         comment(tc4, "You can disable/enable bug patches for Thaumcraft 4 here");
