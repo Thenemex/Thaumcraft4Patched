@@ -12,7 +12,8 @@ public class Config extends AConfig {
             endlessDarkShrineFoundationPatchEnabled, golemDecorationIconBoundsPatchEnabled;
     public static boolean mtEnabled, mineTweakerServerCommandRollbackPatchEnabled;
     public static int mgckEntropyFogIntensity, mgckEntropyFogCloseness, mgckDarkShrineFoundationDepthLimit;
-    public static boolean hlcEnabled, excavationFocusHlcCompatibilityPatchEnabled, primalCrusherHlcCompatibilityPatchEnabled;
+    public static boolean hlcEnabled, excavationFocusHlcCompatibilityPatchEnabled,
+            primalCrusherHlcCompatibilityPatchEnabled, neighborDropsHlcCompatibilityPatchEnabled;
     public static boolean fldEnabled, thaumcraftMagicalLeavesFastDecayPatchEnabled, taintedMagicWarpwoodLeavesFastDecayPatchEnabled;
     public static boolean tcclmEnabled, thaumaturgeWitcheryGuardNonAggressionPatchEnabled;
     public static boolean tc4Enabled, boneBowResearchPatchEnabled, golemLumberCoreWoodHardnessPatchEnabled, nullResearchParentsPatchEnabled;
@@ -74,6 +75,12 @@ comment(angelica, "You can disable/enable compatibility patches for Angelica her
         comment(hlc, "You can disable/enable compatibility patches for Harvest Level Config here");
         excavationFocusHlcCompatibilityPatchEnabled = newEntry(hlc, "ExcavationFocusDiamondTools", "While the Excavation Focus magic is actively mining, treats it as a diamond/Thaumium-level pickaxe, axe, and shovel for Harvest Level Config and compatible tool checks. Physically mining with the wand itself remains equivalent to using an empty hand.");
         primalCrusherHlcCompatibilityPatchEnabled = newEntry(hlc, "PrimalCrusherTools", "Makes the Thaumcraft Primal Crusher correctly count as a level-5 pickaxe and shovel for blocks edited by Harvest Level Config");
+
+        neighborDropsHlcCompatibilityPatchEnabled = newEntry(
+                hlc,
+                "NeighborDrops",
+                "Prevents Harvest Level Config from clearing drops from attached blocks when they break before the block being harvested"
+        );
 
         comment(fld, "You can disable/enable compatibility patches for Fast Leaf Decay here");
         thaumcraftMagicalLeavesFastDecayPatchEnabled = newEntry(fld, "ThaumcraftMagicalLeaves", "Makes Greatwood and Silverwood leaves use Fast Leaf Decay's configured decay speed");
