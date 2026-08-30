@@ -138,6 +138,31 @@ public class TCPatchTransformer implements IClassTransformer {
     private static final String HLC_SHOULD_CLEAR_DROPS_DESCRIPTOR =
             "(Lnet/minecraftforge/event/world/BlockEvent$HarvestDropsEvent;)Z";
 
+    private static final String THAUMONOMICON_RECIPE_TARGET =
+            "thaumcraft.client.gui.GuiResearchRecipe";
+
+    private static final String THAUMONOMICON_RECIPE_LIGHTING_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/"
+                    + "ThaumonomiconRecipeLightingPatch";
+
+    private static final String RENDER_ITEM_OWNER =
+            "net/minecraft/client/renderer/entity/RenderItem";
+
+    private static final String RENDER_ITEM_GUI_NAME =
+            "func_82406_b";
+
+    private static final String RENDER_ITEM_GUI_DESCRIPTOR =
+            "(Lnet/minecraft/client/gui/FontRenderer;"
+                    + "Lnet/minecraft/client/renderer/texture/TextureManager;"
+                    + "Lnet/minecraft/item/ItemStack;II)V";
+
+    private static final String PATCH_RENDER_ITEM_GUI_DESCRIPTOR =
+            "(Lnet/minecraft/client/renderer/entity/RenderItem;"
+                    + "Lnet/minecraft/client/gui/FontRenderer;"
+                    + "Lnet/minecraft/client/renderer/texture/TextureManager;"
+                    + "Lnet/minecraft/item/ItemStack;II)V";
+
+
     private static final String ANGELICA_MODEL_MESHES_TARGET =
             "com.gtnewhorizons.angelica.rendering.tesr.VanillaModelMeshes";
 
@@ -282,6 +307,10 @@ public class TCPatchTransformer implements IClassTransformer {
 
         if (EXCAVATION_FOCUS_TARGET.equals(transformedName)) {
             return transformExcavationFocusClass(basicClass);
+        }
+
+        if (THAUMONOMICON_RECIPE_TARGET.equals(transformedName)) {
+            return transformThaumonomiconRecipe(basicClass);
         }
 
         if (HARVEST_LEVEL_CONFIG_TARGET.equals(transformedName)) {
@@ -485,6 +514,64 @@ public class TCPatchTransformer implements IClassTransformer {
         normalHarvestCall.desc = DROP_BLOCK_WITH_CHANCE_DESCRIPTOR;
 
         return true;
+    }
+
+    private byte[] transformThaumonomiconRecipe(byte[] basicClass) {
+        ClassNode classNode = readClass(basicClass);
+        MethodInsnNode[] calls = new MethodInsnNode[16];
+        int count = 0;
+
+        for (MethodNode method : classNode.methods) {
+            for (AbstractInsnNode instruction
+                    : method.instructions.toArray()) {
+
+                if (!(instruction instanceof MethodInsnNode)) {
+                    continue;
+                }
+
+                MethodInsnNode call =
+                        (MethodInsnNode) instruction;
+
+                if (call.getOpcode() != Opcodes.INVOKEVIRTUAL
+                        || !RENDER_ITEM_OWNER.equals(call.owner)
+                        || !RENDER_ITEM_GUI_NAME.equals(call.name)
+                        || !RENDER_ITEM_GUI_DESCRIPTOR.equals(call.desc)) {
+
+                    continue;
+                }
+
+                if (count < calls.length) {
+                    calls[count] = call;
+                }
+
+                count++;
+            }
+        }
+
+        if (count != calls.length) {
+            logger.error(
+                    "GuiResearchRecipe has an unexpected number of "
+                            + "item render calls. Thaumonomicon recipe "
+                            + "lighting patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        for (MethodInsnNode call : calls) {
+            call.setOpcode(Opcodes.INVOKESTATIC);
+            call.owner =
+                    THAUMONOMICON_RECIPE_LIGHTING_PATCH_OWNER;
+            call.name = "renderItem";
+            call.desc =
+                    PATCH_RENDER_ITEM_GUI_DESCRIPTOR;
+        }
+
+        logger.info(
+                "Successfully patched Thaumonomicon recipe item lighting!"
+        );
+
+        return writeClass(classNode);
     }
 
     private byte[] transformHarvestLevelConfig(byte[] basicClass) {
