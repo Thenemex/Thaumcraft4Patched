@@ -291,6 +291,25 @@ public class TCPatchTransformer implements IClassTransformer {
             "(Lnet/minecraft/block/Block;"
                     + "Lnet/minecraft/world/World;IIIII)V";
 
+    private static final String ELEMENTAL_FIRE_TARGET =
+            "thaumic.tinkerer.common.block.fire.BlockFireBase";
+
+    private static final String ELEMENTAL_FIRE_UPDATE_TICK_DESCRIPTOR =
+            "(Lnet/minecraft/world/World;IIILjava/util/Random;)V";
+
+    private static final String GAME_RULES_OWNER =
+            "net/minecraft/world/GameRules";
+
+    private static final String GET_GAME_RULE_BOOLEAN_DESCRIPTOR =
+            "(Ljava/lang/String;)Z";
+
+    private static final String ELEMENTAL_FIRE_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/"
+                    + "ThaumicTinkererElementalFireTickPatch";
+
+    private static final String PATCH_GET_GAME_RULE_BOOLEAN_DESCRIPTOR =
+            "(Lnet/minecraft/world/GameRules;Ljava/lang/String;)Z";
+
     @Override
     public byte[] transform(
             String name,
@@ -356,6 +375,10 @@ public class TCPatchTransformer implements IClassTransformer {
 
         if (GRAVESTONE_DEATH_EVENTS_TARGET.equals(transformedName)) {
             return transformGravestoneDeathEvents(basicClass);
+        }
+
+        if (ELEMENTAL_FIRE_TARGET.equals(transformedName)) {
+            return transformThaumicTinkererElementalFire(basicClass);
         }
         return basicClass;
     }
@@ -1957,6 +1980,117 @@ public class TCPatchTransformer implements IClassTransformer {
         inventoryCall.owner = GRAVESTONE_PATCH_OWNER;
         inventoryCall.name = PATCH_ADD_DEATH_NOTE_NAME;
         inventoryCall.desc = PATCH_ADD_DEATH_NOTE_DESCRIPTOR;
+
+        return true;
+    }
+
+    /**
+     * Sends the doFireTick game rule read of Thaumic Tinkerer elemental fire
+     * through our helper.
+     *
+     * BlockFireBase.updateTick returns at once when that rule is off, so the
+     * six elemental fires never transmute on servers that disable vanilla fire
+     * spread. Vanilla fire is a different class and is not transformed.
+     */
+    private byte[] transformThaumicTinkererElementalFire(byte[] basicClass) {
+        ClassNode classNode = readClass(basicClass);
+        MethodNode targetMethod = null;
+
+        for (MethodNode method : classNode.methods) {
+            if (ELEMENTAL_FIRE_UPDATE_TICK_DESCRIPTOR.equals(method.desc)
+                    && ("func_149674_a".equals(method.name)
+                    || "updateTick".equals(method.name))) {
+
+                if (targetMethod != null) {
+                    logger.error(
+                            "Found multiple Thaumic Tinkerer BlockFireBase "
+                                    + "updateTick methods. The elemental fire "
+                                    + "tick patch was not installed!"
+                    );
+
+                    return basicClass;
+                }
+
+                targetMethod = method;
+            }
+        }
+
+        if (targetMethod == null) {
+            logger.error(
+                    "Could not find Thaumic Tinkerer BlockFireBase.updateTick. "
+                            + "The elemental fire tick patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        if (!patchElementalFireDoFireTickCall(targetMethod)) {
+            logger.error(
+                    "Could not find the unique Thaumic Tinkerer BlockFireBase "
+                            + "doFireTick game rule call. The elemental fire "
+                            + "tick patch was not installed!"
+            );
+
+            return basicClass;
+        }
+
+        logger.info(
+                "Successfully transformed Thaumic Tinkerer elemental fire "
+                        + "to tick when doFireTick is off!"
+        );
+
+        return writeClass(classNode);
+    }
+
+    private boolean patchElementalFireDoFireTickCall(MethodNode method) {
+        MethodInsnNode gameRuleCall = null;
+
+        for (AbstractInsnNode instruction
+                : method.instructions.toArray()) {
+
+            if (!(instruction instanceof MethodInsnNode)) {
+                continue;
+            }
+
+            MethodInsnNode methodCall =
+                    (MethodInsnNode) instruction;
+
+            if (methodCall.getOpcode() != Opcodes.INVOKEVIRTUAL
+                    || !GAME_RULES_OWNER.equals(methodCall.owner)
+                    || !GET_GAME_RULE_BOOLEAN_DESCRIPTOR.equals(
+                    methodCall.desc)
+                    || !("func_82766_b".equals(methodCall.name)
+                    || "getGameRuleBooleanValue".equals(
+                    methodCall.name))) {
+
+                continue;
+            }
+
+            AbstractInsnNode previous =
+                    previousRealInstruction(methodCall);
+
+            if (!(previous instanceof LdcInsnNode)
+                    || !"doFireTick".equals(
+                    ((LdcInsnNode) previous).cst)) {
+
+                continue;
+            }
+
+            if (gameRuleCall != null) {
+                return false;
+            }
+
+            gameRuleCall = methodCall;
+        }
+
+        if (gameRuleCall == null) {
+            return false;
+        }
+
+        gameRuleCall.setOpcode(Opcodes.INVOKESTATIC);
+        gameRuleCall.owner = ELEMENTAL_FIRE_PATCH_OWNER;
+        gameRuleCall.name = "getGameRuleBooleanValue";
+        gameRuleCall.desc = PATCH_GET_GAME_RULE_BOOLEAN_DESCRIPTOR;
 
         return true;
     }

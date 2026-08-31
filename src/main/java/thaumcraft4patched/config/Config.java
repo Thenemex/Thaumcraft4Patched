@@ -25,6 +25,7 @@ public class Config extends AConfig {
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
     public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled,
             removeNecroInfusionRecipe, oblivionJarHarvestPatchEnabled;
+    public static boolean ttEnabled, elementalFireIgnoresDoFireTickPatchEnabled;
 
     public Config(FMLPreInitializationEvent event) {
         super(Thaumcraft4Patched.modName, event, "1.6.1");
@@ -32,7 +33,7 @@ public class Config extends AConfig {
 
     protected void loadConfig() {
         String mods = "Mods", mc = "Minecraft", angelica = "Angelica", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
-                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3", gravestone = "Gravestone";
+                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3", gravestone = "Gravestone", tt = "Thaumic-Tinkerer";
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Minecraft");
         angelicaEnabled = newEntry(mods, "Angelica");
@@ -47,6 +48,7 @@ public class Config extends AConfig {
         tbEnabled = newEntry(mods, "Thaumic Bases");
         txEnabled = newEntry(mods, "Thaumic Exploration");
         wgEnabled = newEntry(mods, "Witching Gadgets");
+        ttEnabled = newEntry(mods, "Thaumic Tinkerer");
 
         comment(mc, "You can disable/enable bug patches for vanilla Minecraft here");
         oakWoodenSlabBuggedRecipePatchEnabled = newEntry(mc, "OakWoodenSlab", "Removes the recipe that overtake over all other wooden slabs, allowing to make only oak wooden slabs");
@@ -133,5 +135,8 @@ comment(angelica, "You can disable/enable compatibility patches for Angelica her
 
         comment(wg, "You can disable/enable bug patches for Witching Gadgets addon here");
         missingPrereqs_WitchingWearables = newEntry(wg, "MissingPrereqs_WitchingWearables", "Adds the missing prereq(s) for the \"Witching Wearables\" research");
+
+        comment(tt, "You can disable/enable bug patches for Thaumic Tinkerer here");
+        elementalFireIgnoresDoFireTickPatchEnabled = newEntry(tt, "ElementalFireIgnoresDoFireTick", "Lets Thaumic Tinkerer's six elemental fires tick and transmute neighbor blocks when the doFireTick game rule is off. Vanilla fire is unchanged.");
     }
 }
