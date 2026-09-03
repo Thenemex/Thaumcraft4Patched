@@ -18,7 +18,8 @@ public class Config extends AConfig {
     public static boolean tcclmEnabled, thaumaturgeWitcheryGuardNonAggressionPatchEnabled;
     public static boolean tc4Enabled, boneBowResearchPatchEnabled,
             golemLumberCoreWoodHardnessPatchEnabled, nullResearchParentsPatchEnabled,
-            thaumonomiconRecipeLightingPatchEnabled;
+            thaumonomiconRecipeLightingPatchEnabled,
+            eldritchRingLakeProtectionPatchEnabled;
     public static boolean witcheryEnabled, witcheryRaiseLandBedrockProtectionPatchEnabled;
     public static boolean gravestoneEnabled, deathNoteKeepInventoryPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
@@ -117,6 +118,11 @@ comment(angelica, "You can disable/enable compatibility patches for Angelica her
                 tc4,
                 "ThaumonomiconRecipeLighting",
                 "Corrects dark 3D item models on Thaumonomicon recipe pages"
+        );
+        eldritchRingLakeProtectionPatchEnabled = newEntry(
+                tc4,
+                "EldritchRingLakeProtection",
+                "Prevents vanilla lakes from generating through existing Eldritch Rings"
         );
 
         comment(tb, "You can disable/enable bug patches for Thaumcraft 4 here");
