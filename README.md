@@ -18,6 +18,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
   * Tainted Magic Warpwood Leaves
 * Gravestone gave a death note after every death while the keepInventory game rule was on, even with "enable_death_note" turned off in its config. The note now follows that entry.
 * Prevents Thaumic Concilium Thaumaturges and Witchery Village Guards from attacking each other, while preserving their normal combat behaviour against other mobs.
+* Thaumic Tinkerer's six elemental fires now tick and transmute neighbor blocks when the doFireTick game rule is off. Vanilla fire is unchanged.
 - Adds the missing prereqs (forgotten by author) for some researches in TC4 addons :
   - Thaumic Bases :
     - Thaumium Bracelet, Void Bracelet and Void Wand Core
