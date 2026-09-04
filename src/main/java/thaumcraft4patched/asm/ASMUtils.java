@@ -22,31 +22,19 @@ final class ASMUtils {
         return writer.toByteArray();
     }
 
-    static AbstractInsnNode nextRealInstruction(
-            AbstractInsnNode instruction) {
-
+    static AbstractInsnNode nextRealInstruction(AbstractInsnNode instruction) {
         AbstractInsnNode current = instruction.getNext();
-
-        while (current != null
-                && current.getOpcode() < 0) {
-
+        while (current != null && current.getOpcode() < 0) {
             current = current.getNext();
         }
-
         return current;
     }
 
-    static AbstractInsnNode previousRealInstruction(
-            AbstractInsnNode instruction) {
-
+    static AbstractInsnNode previousRealInstruction(AbstractInsnNode instruction) {
         AbstractInsnNode current = instruction.getPrevious();
-
-        while (current != null
-                && current.getOpcode() < 0) {
-
+        while (current != null && current.getOpcode() < 0) {
             current = current.getPrevious();
         }
-
         return current;
     }
 }

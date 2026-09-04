@@ -28,8 +28,7 @@ public class TCPatchCorePlugin implements IFMLLoadingPlugin {
                 "thaumcraft4patched.asm.OblivionJarHarvestTransformer",
                 "thaumcraft4patched.asm.MineTweakerCommandRollbackTransformer",
                 "thaumcraft4patched.asm.GravestoneDeathNoteTransformer",
-                "thaumcraft4patched.asm.ThaumicTinkererElementalFireTransformer"
-        };
+                "thaumcraft4patched.asm.ThaumicTinkererElementalFireTransformer"};
     }
 
     @Override
@@ -43,8 +42,7 @@ public class TCPatchCorePlugin implements IFMLLoadingPlugin {
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {
-    }
+    public void injectData(Map<String, Object> data) {}
 
     @Override
     public String getAccessTransformerClass() {

@@ -34,7 +34,8 @@ public class Config extends AConfig {
 
     protected void loadConfig() {
         String mods = "Mods", mc = "Minecraft", angelica = "Angelica", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
-                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3", gravestone = "Gravestone", tt = "Thaumic-Tinkerer";
+                tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3",
+                gravestone = "Gravestone", tt = "Thaumic-Tinkerer";
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Minecraft");
         angelicaEnabled = newEntry(mods, "Angelica");
@@ -52,97 +53,90 @@ public class Config extends AConfig {
         ttEnabled = newEntry(mods, "Thaumic Tinkerer");
 
         comment(mc, "You can disable/enable bug patches for vanilla Minecraft here");
-        oakWoodenSlabBuggedRecipePatchEnabled = newEntry(mc, "OakWoodenSlab", "Removes the recipe that overtake over all other wooden slabs, allowing to make only oak wooden slabs");
-comment(angelica, "You can disable/enable compatibility patches for Angelica here");
-        angelicaSignEditorCompatibilityPatchEnabled = newEntry(
-                angelica,
-                "SignEditorCompatibility",
-                "Prevents Angelica's cached sign rendering from corrupting the vanilla sign editor while preserving cached sign rendering outside the editor"
-        );
+        oakWoodenSlabBuggedRecipePatchEnabled = newEntry(mc, "OakWoodenSlab",
+                "Removes the recipe that overtake over all other wooden slabs, allowing to make only oak wooden slabs");
+        comment(angelica, "You can disable/enable compatibility patches for Angelica here");
+        angelicaSignEditorCompatibilityPatchEnabled = newEntry(angelica, "SignEditorCompatibility",
+                "Prevents Angelica's cached sign rendering from corrupting the vanilla sign editor while preserving cached sign rendering outside the editor");
 
         comment(mgck, "You can disable/enable bug patches for Magic Cookies here");
         comment(mt, "You can disable/enable bug patches for MineTweaker 3 here");
 
-        mineTweakerServerCommandRollbackPatchEnabled = newEntry(
-                mt,
-                "ServerCommandRollback",
-                "Prevents stale MineTweaker server command rollback from crashing when switching between singleplayer and multiplayer"
-        );
-        golemDecorationIconBoundsPatchEnabled = newEntry(
-                mgck,
-                "GolemDecorationIconBounds",
-                "Prevents invalid Golem Decoration metadata from crashing icon lookups used by NEI and other mods"
-        );
-        opaqueFogNetherDarkShrineJava25PatchEnabled = newEntry(mgck, "OpaqueFogNetherDarkShrineJava25", "Removes the opaque fog inside the Dark Shrine, when using higher Java version");
-        mgckEntropyFogIntensity = newEntry(mgck, "EntropyFogIntensity", 4, 0, 10, "Controls the Dark Shrine entropy fog intensity. 0 is the lightest, 4 is the recommended default, and 10 is the strongest.");
-        mgckEntropyFogCloseness = newEntry(mgck, "EntropyFogCloseness", 5, 0, 10, "Controls how close the Dark Shrine entropy fog appears around the player. 0 keeps the fog furthest away, 5 preserves the normal patched distance, and 10 brings the fog closest.");
-        endlessDarkShrineFoundationPatchEnabled = newEntry(mgck, "EndlessDarkShrineFoundation", "Gives the Dark Shrine foundation a floor. Without it the world generator can fill air forever when a nearby chunk is not generated yet, which holds the server thread at full load with no crash and no log line.");
-        mgckDarkShrineFoundationDepthLimit = newEntry(mgck, "DarkShrineFoundationDepthLimit", 20, 8, 128, "How far the Dark Shrine foundation can reach under the shrine, in blocks. The foundation starts 8 blocks under the shrine, so 20 gives 12 layers of fill.");
+        mineTweakerServerCommandRollbackPatchEnabled = newEntry(mt, "ServerCommandRollback",
+                "Prevents stale MineTweaker server command rollback from crashing when switching between singleplayer and multiplayer");
+        golemDecorationIconBoundsPatchEnabled = newEntry(mgck, "GolemDecorationIconBounds",
+                "Prevents invalid Golem Decoration metadata from crashing icon lookups used by NEI and other mods");
+        opaqueFogNetherDarkShrineJava25PatchEnabled = newEntry(mgck, "OpaqueFogNetherDarkShrineJava25",
+                "Removes the opaque fog inside the Dark Shrine, when using higher Java version");
+        mgckEntropyFogIntensity = newEntry(mgck, "EntropyFogIntensity", 4, 0, 10,
+                "Controls the Dark Shrine entropy fog intensity. 0 is the lightest, 4 is the recommended default, and 10 is the strongest.");
+        mgckEntropyFogCloseness = newEntry(mgck, "EntropyFogCloseness", 5, 0, 10,
+                "Controls how close the Dark Shrine entropy fog appears around the player. 0 keeps the fog furthest away, 5 preserves the normal patched distance, and 10 brings the fog closest.");
+        endlessDarkShrineFoundationPatchEnabled = newEntry(mgck, "EndlessDarkShrineFoundation",
+                "Gives the Dark Shrine foundation a floor. Without it the world generator can fill air forever when a nearby chunk is not generated yet, which holds the server thread at full load with no crash and no log line.");
+        mgckDarkShrineFoundationDepthLimit = newEntry(mgck, "DarkShrineFoundationDepthLimit", 20, 8, 128,
+                "How far the Dark Shrine foundation can reach under the shrine, in blocks. The foundation starts 8 blocks under the shrine, so 20 gives 12 layers of fill.");
 
         comment(hlc, "You can disable/enable compatibility patches for Harvest Level Config here");
-        excavationFocusHlcCompatibilityPatchEnabled = newEntry(hlc, "ExcavationFocusDiamondTools", "While the Excavation Focus magic is actively mining, treats it as a diamond/Thaumium-level pickaxe, axe, and shovel for Harvest Level Config and compatible tool checks. Physically mining with the wand itself remains equivalent to using an empty hand.");
-        primalCrusherHlcCompatibilityPatchEnabled = newEntry(hlc, "PrimalCrusherTools", "Makes the Thaumcraft Primal Crusher correctly count as a level-5 pickaxe and shovel for blocks edited by Harvest Level Config");
+        excavationFocusHlcCompatibilityPatchEnabled = newEntry(hlc, "ExcavationFocusDiamondTools",
+                "While the Excavation Focus magic is actively mining, treats it as a diamond/Thaumium-level pickaxe, axe, and shovel for Harvest Level Config and compatible tool checks. Physically mining with the wand itself remains equivalent to using an empty hand.");
+        primalCrusherHlcCompatibilityPatchEnabled = newEntry(hlc, "PrimalCrusherTools",
+                "Makes the Thaumcraft Primal Crusher correctly count as a level-5 pickaxe and shovel for blocks edited by Harvest Level Config");
 
-        neighborDropsHlcCompatibilityPatchEnabled = newEntry(
-                hlc,
-                "NeighborDrops",
-                "Prevents Harvest Level Config from clearing drops from attached blocks when they break before the block being harvested"
-        );
+        neighborDropsHlcCompatibilityPatchEnabled = newEntry(hlc, "NeighborDrops",
+                "Prevents Harvest Level Config from clearing drops from attached blocks when they break before the block being harvested");
 
         comment(fld, "You can disable/enable compatibility patches for Fast Leaf Decay here");
-        thaumcraftMagicalLeavesFastDecayPatchEnabled = newEntry(fld, "ThaumcraftMagicalLeaves", "Makes Greatwood and Silverwood leaves use Fast Leaf Decay's configured decay speed");
-        taintedMagicWarpwoodLeavesFastDecayPatchEnabled = newEntry(fld, "TaintedMagicWarpwoodLeaves", "Makes Tainted Magic Warpwood leaves use Fast Leaf Decay's configured decay speed");
+        thaumcraftMagicalLeavesFastDecayPatchEnabled = newEntry(fld, "ThaumcraftMagicalLeaves",
+                "Makes Greatwood and Silverwood leaves use Fast Leaf Decay's configured decay speed");
+        taintedMagicWarpwoodLeavesFastDecayPatchEnabled = newEntry(fld, "TaintedMagicWarpwoodLeaves",
+                "Makes Tainted Magic Warpwood leaves use Fast Leaf Decay's configured decay speed");
 
         comment(tcon, "You can disable/enable compatibility patches for Thaumic Concilium here");
-        thaumaturgeWitcheryGuardNonAggressionPatchEnabled = newEntry(tcon, "WitcheryGuardNonAggression", "Stops Thaumic Concilium Thaumaturges and Witchery Village Guards from fighting each other");
+        thaumaturgeWitcheryGuardNonAggressionPatchEnabled = newEntry(tcon, "WitcheryGuardNonAggression",
+                "Stops Thaumic Concilium Thaumaturges and Witchery Village Guards from fighting each other");
 
         comment(witchery, "You can disable/enable bug patches for Witchery here");
-        witcheryRaiseLandBedrockProtectionPatchEnabled = newEntry(
-                witchery,
-                "RaiseLandBedrockProtection",
-                "Prevents the Raise Land brew from moving or duplicating bedrock while preserving its normal behaviour for other blocks"
-        );
+        witcheryRaiseLandBedrockProtectionPatchEnabled = newEntry(witchery, "RaiseLandBedrockProtection",
+                "Prevents the Raise Land brew from moving or duplicating bedrock while preserving its normal behaviour for other blocks");
 
         comment(gravestone, "You can disable/enable bug patches for Gravestone here");
-        deathNoteKeepInventoryPatchEnabled = newEntry(
-                gravestone,
-                "DeathNoteFollowsConfig",
-                "Makes the death note follow the \"enable_death_note\" entry of Gravestone while the keepInventory game rule is on. Without it the mod gives a note after every death, whatever that entry holds."
-        );
+        deathNoteKeepInventoryPatchEnabled = newEntry(gravestone, "DeathNoteFollowsConfig",
+                "Makes the death note follow the \"enable_death_note\" entry of Gravestone while the keepInventory game rule is on. Without it the mod gives a note after every death, whatever that entry holds.");
 
         comment(tc4, "You can disable/enable bug patches for Thaumcraft 4 here");
-        boneBowResearchPatchEnabled = newEntry(tc4,"HiddenBoneBowResearch", "Removes the hidden property of the research -> it will be unlocked when the player discover the Telum aspect");
-        golemLumberCoreWoodHardnessPatchEnabled = newEntry(tc4, "GolemLumberBlockHardness", "This patches the issue when Golem with Lumber core cannot drop wood blocks that are too hard to be broken by hand (compatible with HLC)");
-        nullResearchParentsPatchEnabled = newEntry(tc4, "NullResearchParentsPatchedEnabled", false, "Special tweak that will replace any parents/parentsHidden that are Null with an empty array, iterating on all researches registered");
-        thaumonomiconRecipeLightingPatchEnabled = newEntry(
-                tc4,
-                "ThaumonomiconRecipeLighting",
-                "Corrects dark 3D item models on Thaumonomicon recipe pages"
-        );
-        eldritchRingLakeProtectionPatchEnabled = newEntry(
-                tc4,
-                "EldritchRingLakeProtection",
-                "Prevents vanilla lakes from generating through existing Eldritch Rings"
-        );
+        boneBowResearchPatchEnabled = newEntry(tc4,"HiddenBoneBowResearch",
+                "Removes the hidden property of the research -> it will be unlocked when the player discover the Telum aspect");
+        golemLumberCoreWoodHardnessPatchEnabled = newEntry(tc4, "GolemLumberBlockHardness",
+                "This patches the issue when Golem with Lumber core cannot drop wood blocks that are too hard to be broken by hand (compatible with HLC)");
+        nullResearchParentsPatchEnabled = newEntry(tc4, "NullResearchParentsPatchedEnabled", false,
+                "Special tweak that will replace any parents/parentsHidden that are Null with an empty array, iterating on all researches registered");
+        thaumonomiconRecipeLightingPatchEnabled = newEntry(tc4, "ThaumonomiconRecipeLighting",
+                "Corrects dark 3D item models on Thaumonomicon recipe pages");
+        eldritchRingLakeProtectionPatchEnabled = newEntry(tc4, "EldritchRingLakeProtection",
+                "Prevents vanilla lakes from generating through existing Eldritch Rings");
 
         comment(tb, "You can disable/enable bug patches for Thaumcraft 4 here");
-        missingPrereqs_ThaumiumBracelet = newEntry(tb,"MissingPrereqs_ThaumiumBracelet", "Adds the missing prereq(s) for the \"Thaumium Bracelet\" research");
-        missingPrereqs_VoidBracelet = newEntry(tb,"MissingPrereqs_VoidBracelet", "Adds the missing prereq(s) for the \"Void Bracelet\" research");
-        missingPrereqs_VoidWandCore = newEntry(tb, "MissingPrereqs_VoidWandCore", "Adds the missing prereq(s) for the \"Void Wand Core\" research");
+        missingPrereqs_ThaumiumBracelet = newEntry(tb,"MissingPrereqs_ThaumiumBracelet",
+                "Adds the missing prereq(s) for the \"Thaumium Bracelet\" research");
+        missingPrereqs_VoidBracelet = newEntry(tb,"MissingPrereqs_VoidBracelet",
+                "Adds the missing prereq(s) for the \"Void Bracelet\" research");
+        missingPrereqs_VoidWandCore = newEntry(tb, "MissingPrereqs_VoidWandCore",
+                "Adds the missing prereq(s) for the \"Void Wand Core\" research");
 
         comment(tx, "You can disable/enable bug patches for Thaumic Exploration here");
-        blackFloatingCandleRecipePatchEnabled = newEntry(tx, "BlackFloatingCandle", "This patches the crash caused by trying to craft a Black Floating Candle");
+        blackFloatingCandleRecipePatchEnabled = newEntry(tx, "BlackFloatingCandle",
+                "This patches the crash caused by trying to craft a Black Floating Candle");
 
-        oblivionJarHarvestPatchEnabled = newEntry(
-                tx,
-                "OblivionJarHarvest",
-                "Allows the Oblivion Jar to be harvested and recovered instead of dropping nothing"
-        );
+        oblivionJarHarvestPatchEnabled = newEntry(tx, "OblivionJarHarvest",
+                "Allows the Oblivion Jar to be harvested and recovered instead of dropping nothing");
 
         comment(wg, "You can disable/enable bug patches for Witching Gadgets addon here");
-        missingPrereqs_WitchingWearables = newEntry(wg, "MissingPrereqs_WitchingWearables", "Adds the missing prereq(s) for the \"Witching Wearables\" research");
+        missingPrereqs_WitchingWearables = newEntry(wg, "MissingPrereqs_WitchingWearables",
+                "Adds the missing prereq(s) for the \"Witching Wearables\" research");
 
         comment(tt, "You can disable/enable bug patches for Thaumic Tinkerer here");
-        elementalFireIgnoresDoFireTickPatchEnabled = newEntry(tt, "ElementalFireIgnoresDoFireTick", "Lets Thaumic Tinkerer's six elemental fires tick and transmute neighbor blocks when the doFireTick game rule is off. Vanilla fire is unchanged.");
+        elementalFireIgnoresDoFireTickPatchEnabled = newEntry(tt, "ElementalFireIgnoresDoFireTick",
+                "Lets Thaumic Tinkerer's six elemental fires tick and transmute neighbor blocks when the doFireTick game rule is off. Vanilla fire is unchanged.");
     }
 }
