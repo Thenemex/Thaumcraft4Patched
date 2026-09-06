@@ -6,7 +6,7 @@ import thaumcraft4patched.Thaumcraft4Patched;
 
 public class Config extends AConfig {
 
-    public static boolean mcEnabled, oakWoodenSlabBuggedRecipePatchEnabled;
+    public static boolean mcEnabled, oakWoodenSlabBuggedRecipePatchEnabled, villagerTradeStackMatchingPatchEnabled;
     public static boolean angelicaEnabled, angelicaSignEditorCompatibilityPatchEnabled;
     public static boolean mgckEnabled, opaqueFogNetherDarkShrineJava25PatchEnabled,
             endlessDarkShrineFoundationPatchEnabled, golemDecorationIconBoundsPatchEnabled;
@@ -55,6 +55,8 @@ public class Config extends AConfig {
         comment(mc, "You can disable/enable bug patches for vanilla Minecraft here");
         oakWoodenSlabBuggedRecipePatchEnabled = newEntry(mc, "OakWoodenSlab",
                 "Removes the recipe that overtake over all other wooden slabs, allowing to make only oak wooden slabs");
+        villagerTradeStackMatchingPatchEnabled = newEntry(mc, "VillagerTradeStackMatching",
+                "Makes villager trade inputs respect subtype metadata and required NBT while preserving wildcard metadata");
         comment(angelica, "You can disable/enable compatibility patches for Angelica here");
         angelicaSignEditorCompatibilityPatchEnabled = newEntry(angelica, "SignEditorCompatibility",
                 "Prevents Angelica's cached sign rendering from corrupting the vanilla sign editor while preserving cached sign rendering outside the editor");
