@@ -29,7 +29,7 @@ public class Config extends AConfig {
     public static boolean ttEnabled, elementalFireIgnoresDoFireTickPatchEnabled;
 
     public Config(FMLPreInitializationEvent event) {
-        super(Thaumcraft4Patched.modName, event, "1.6.1");
+        super(Thaumcraft4Patched.modName, event, "1.19");
     }
 
     protected void loadConfig() {
