@@ -121,7 +121,7 @@ public class Config extends AConfig {
         eldritchRingLakeProtectionPatchEnabled = newEntry(tc4, "EldritchRingLakeProtection",
                 "Prevents vanilla lakes from generating through existing Eldritch Rings");
 
-        comment(tb, "You can disable/enable bug patches for Thaumic Bases here");
+        comment(tb, "You can disable/enable bug patches for Thaumcraft 4 here");
         missingPrereqs_ThaumiumBracelet = newEntry(tb,"MissingPrereqs_ThaumiumBracelet",
                 "Adds the missing prereq(s) for the \"Thaumium Bracelet\" research");
         missingPrereqs_VoidBracelet = newEntry(tb,"MissingPrereqs_VoidBracelet",
