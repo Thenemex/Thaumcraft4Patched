@@ -29,7 +29,10 @@ public class TCPatchCorePlugin implements IFMLLoadingPlugin {
                 "thaumcraft4patched.asm.MineTweakerCommandRollbackTransformer",
                 "thaumcraft4patched.asm.GravestoneDeathNoteTransformer",
                 "thaumcraft4patched.asm.ThaumicTinkererElementalFireTransformer",
-                "thaumcraft4patched.asm.VillagerTradeStackMatchingTransformer"};
+                "thaumcraft4patched.asm.VillagerTradeStackMatchingTransformer",
+                "thaumcraft4patched.asm.ThaumicBasesEntityDeconstructorTransformer",
+                "thaumcraft4patched.asm.MadThaumaturgeMountingTransformer",
+                "thaumcraft4patched.asm.ThaumicHorizonsAlchemiteExplosionTransformer"};
     }
 
     @Override

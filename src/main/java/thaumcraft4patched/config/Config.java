@@ -22,11 +22,13 @@ public class Config extends AConfig {
             eldritchRingLakeProtectionPatchEnabled;
     public static boolean witcheryEnabled, witcheryRaiseLandBedrockProtectionPatchEnabled;
     public static boolean gravestoneEnabled, deathNoteKeepInventoryPatchEnabled;
-    public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore;
+    public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore, entityDeconstructorPlayerCastPatchEnabled;
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
     public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled,
             removeNecroInfusionRecipe, oblivionJarHarvestPatchEnabled;
     public static boolean ttEnabled, elementalFireIgnoresDoFireTickPatchEnabled;
+    public static boolean thEnabled, alchemiteExplosionClaimProtectionPatchEnabled;
+    public static boolean madThaumaturgeMountingPatchEnabled;
 
     public Config(FMLPreInitializationEvent event) {
         super(Thaumcraft4Patched.modName, event, "1.19");
@@ -35,7 +37,7 @@ public class Config extends AConfig {
     protected void loadConfig() {
         String mods = "Mods", mc = "Minecraft", angelica = "Angelica", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
                 tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3",
-                gravestone = "Gravestone", tt = "Thaumic-Tinkerer";
+                gravestone = "Gravestone", tt = "Thaumic-Tinkerer", th = "Thaumic-Horizons";
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Minecraft");
         angelicaEnabled = newEntry(mods, "Angelica");
@@ -51,6 +53,7 @@ public class Config extends AConfig {
         txEnabled = newEntry(mods, "Thaumic Exploration");
         wgEnabled = newEntry(mods, "Witching Gadgets");
         ttEnabled = newEntry(mods, "Thaumic Tinkerer");
+        thEnabled = newEntry(mods, "Thaumic Horizons");
 
         comment(mc, "You can disable/enable bug patches for vanilla Minecraft here");
         oakWoodenSlabBuggedRecipePatchEnabled = newEntry(mc, "OakWoodenSlab",
@@ -118,13 +121,15 @@ public class Config extends AConfig {
         eldritchRingLakeProtectionPatchEnabled = newEntry(tc4, "EldritchRingLakeProtection",
                 "Prevents vanilla lakes from generating through existing Eldritch Rings");
 
-        comment(tb, "You can disable/enable bug patches for Thaumcraft 4 here");
+        comment(tb, "You can disable/enable bug patches for Thaumic Bases here");
         missingPrereqs_ThaumiumBracelet = newEntry(tb,"MissingPrereqs_ThaumiumBracelet",
                 "Adds the missing prereq(s) for the \"Thaumium Bracelet\" research");
         missingPrereqs_VoidBracelet = newEntry(tb,"MissingPrereqs_VoidBracelet",
                 "Adds the missing prereq(s) for the \"Void Bracelet\" research");
         missingPrereqs_VoidWandCore = newEntry(tb, "MissingPrereqs_VoidWandCore",
                 "Adds the missing prereq(s) for the \"Void Wand Core\" research");
+        entityDeconstructorPlayerCastPatchEnabled = newEntry(tb, "EntityDeconstructorPlayerCast",
+                "Prevents the Entity Deconstructor from casting non-player entities to EntityPlayerMP");
 
         comment(tx, "You can disable/enable bug patches for Thaumic Exploration here");
         blackFloatingCandleRecipePatchEnabled = newEntry(tx, "BlackFloatingCandle",
@@ -140,5 +145,12 @@ public class Config extends AConfig {
         comment(tt, "You can disable/enable bug patches for Thaumic Tinkerer here");
         elementalFireIgnoresDoFireTickPatchEnabled = newEntry(tt, "ElementalFireIgnoresDoFireTick",
                 "Lets Thaumic Tinkerer's six elemental fires tick and transmute neighbor blocks when the doFireTick game rule is off. Vanilla fire is unchanged.");
+
+        comment(th, "You can disable/enable compatibility patches for Thaumic Horizons here");
+        alchemiteExplosionClaimProtectionPatchEnabled = newEntry(th, "AlchemiteExplosionClaimProtection",
+                "Makes Alchemite explosions fire Forge's normal detonation event so claim and protection mods can filter affected blocks");
+
+        madThaumaturgeMountingPatchEnabled = newEntry("Thaumic-Concilium", "MadThaumaturgeMounting",
+                "Prevents Mad Thaumaturges from mounting and riding their attack targets");
     }
 }
