@@ -32,7 +32,10 @@ public class TCPatchCorePlugin implements IFMLLoadingPlugin {
                 "thaumcraft4patched.asm.VillagerTradeStackMatchingTransformer",
                 "thaumcraft4patched.asm.ThaumicBasesEntityDeconstructorTransformer",
                 "thaumcraft4patched.asm.MadThaumaturgeMountingTransformer",
-                "thaumcraft4patched.asm.ThaumicHorizonsAlchemiteExplosionTransformer"};
+                "thaumcraft4patched.asm.ThaumicHorizonsAlchemiteExplosionTransformer",
+                "thaumcraft4patched.asm.ForbiddenMagicImpactClaimProtectionTransformer",
+                "thaumcraft4patched.asm.ThaumcraftShamblingHuskItemDropsTransformer",
+                "thaumcraft4patched.asm.SpecialAIShamblingHuskBlacklistTransformer"};
     }
 
     @Override

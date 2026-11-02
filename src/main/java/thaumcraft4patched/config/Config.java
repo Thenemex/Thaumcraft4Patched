@@ -19,7 +19,7 @@ public class Config extends AConfig {
     public static boolean tc4Enabled, boneBowResearchPatchEnabled,
             golemLumberCoreWoodHardnessPatchEnabled, nullResearchParentsPatchEnabled,
             thaumonomiconRecipeLightingPatchEnabled,
-            eldritchRingLakeProtectionPatchEnabled;
+            eldritchRingLakeProtectionPatchEnabled, shamblingHuskItemDropsPatchEnabled;
     public static boolean witcheryEnabled, witcheryRaiseLandBedrockProtectionPatchEnabled;
     public static boolean gravestoneEnabled, deathNoteKeepInventoryPatchEnabled;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore, entityDeconstructorPlayerCastPatchEnabled;
@@ -29,6 +29,8 @@ public class Config extends AConfig {
     public static boolean ttEnabled, elementalFireIgnoresDoFireTickPatchEnabled;
     public static boolean thEnabled, alchemiteExplosionClaimProtectionPatchEnabled;
     public static boolean madThaumaturgeMountingPatchEnabled;
+    public static boolean fmEnabled, forbiddenMagicImpactClaimProtectionPatchEnabled;
+    public static boolean saiEnabled, specialAIShamblingHuskBlacklistPatchEnabled;
 
     public Config(FMLPreInitializationEvent event) {
         super(Thaumcraft4Patched.modName, event, "1.19");
@@ -37,7 +39,7 @@ public class Config extends AConfig {
     protected void loadConfig() {
         String mods = "Mods", mc = "Minecraft", angelica = "Angelica", mgck = "Magic-Cookies", hlc = "Harvest-Level-Config", tc4 = "Thaumcraft-4", tb = "Thaumic-Bases",
                 tx = "Thaumic-Exploration", wg = "Witching-Gadgets", fld = "Fast-Leaf-Decay", tcon = "Thaumic-Concilium", witchery = "Witchery", mt = "MineTweaker-3",
-                gravestone = "Gravestone", tt = "Thaumic-Tinkerer", th = "Thaumic-Horizons";
+                gravestone = "Gravestone", tt = "Thaumic-Tinkerer", th = "Thaumic-Horizons", fm = "Forbidden-Magic", sai = "Special-AI";
         comment(mods, "You can turn off bug-patches for whole mods here");
         mcEnabled = newEntry(mods, "Minecraft");
         angelicaEnabled = newEntry(mods, "Angelica");
@@ -54,6 +56,8 @@ public class Config extends AConfig {
         wgEnabled = newEntry(mods, "Witching Gadgets");
         ttEnabled = newEntry(mods, "Thaumic Tinkerer");
         thEnabled = newEntry(mods, "Thaumic Horizons");
+        fmEnabled = newEntry(mods, "Forbidden Magic");
+        saiEnabled = newEntry(mods, "Special AI");
 
         comment(mc, "You can disable/enable bug patches for vanilla Minecraft here");
         oakWoodenSlabBuggedRecipePatchEnabled = newEntry(mc, "OakWoodenSlab",
@@ -120,6 +124,8 @@ public class Config extends AConfig {
                 "Corrects dark 3D item models on Thaumonomicon recipe pages");
         eldritchRingLakeProtectionPatchEnabled = newEntry(tc4, "EldritchRingLakeProtection",
                 "Prevents vanilla lakes from generating through existing Eldritch Rings");
+        shamblingHuskItemDropsPatchEnabled = newEntry(tc4, "ShamblingHuskItemDrops",
+                "Restores guaranteed-drop equipment carried by Shambling Husks when they die, without changing normal armour drops");
 
         comment(tb, "You can disable/enable bug patches for Thaumcraft 4 here");
         missingPrereqs_ThaumiumBracelet = newEntry(tb,"MissingPrereqs_ThaumiumBracelet",
@@ -149,6 +155,14 @@ public class Config extends AConfig {
         comment(th, "You can disable/enable compatibility patches for Thaumic Horizons here");
         alchemiteExplosionClaimProtectionPatchEnabled = newEntry(th, "AlchemiteExplosionClaimProtection",
                 "Makes Alchemite explosions fire Forge's normal detonation event so claim and protection mods can filter affected blocks");
+
+        comment(fm, "You can disable/enable compatibility patches for Forbidden Magic here");
+        forbiddenMagicImpactClaimProtectionPatchEnabled = newEntry(fm, "ImpactClaimProtection",
+                "Makes Impact 3x3 Chameleon tool mining respect Forge block-break protection events for every extra block");
+
+        comment(sai, "You can disable/enable compatibility patches for Special AI here");
+        specialAIShamblingHuskBlacklistPatchEnabled = newEntry(sai, "ShamblingHuskBlacklist",
+                "Prevents Special AI from applying extra behaviours to Thaumcraft Shambling Husks");
 
         madThaumaturgeMountingPatchEnabled = newEntry("Thaumic-Concilium", "MadThaumaturgeMounting",
                 "Prevents Mad Thaumaturges from mounting and riding their attack targets");
