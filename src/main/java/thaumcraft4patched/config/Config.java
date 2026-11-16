@@ -14,6 +14,7 @@ public class Config extends AConfig {
     public static int mgckEntropyFogIntensity, mgckEntropyFogCloseness, mgckDarkShrineFoundationDepthLimit;
     public static boolean hlcEnabled, excavationFocusHlcCompatibilityPatchEnabled,
             primalCrusherHlcCompatibilityPatchEnabled, neighborDropsHlcCompatibilityPatchEnabled;
+    public static boolean netherQuartzHlcCompatibilityPatchEnabled;
     public static boolean fldEnabled, thaumcraftMagicalLeavesFastDecayPatchEnabled, taintedMagicWarpwoodLeavesFastDecayPatchEnabled;
     public static boolean tcclmEnabled, thaumaturgeWitcheryGuardNonAggressionPatchEnabled;
     public static boolean tc4Enabled, boneBowResearchPatchEnabled,
@@ -94,6 +95,9 @@ public class Config extends AConfig {
 
         neighborDropsHlcCompatibilityPatchEnabled = newEntry(hlc, "NeighborDrops",
                 "Prevents Harvest Level Config from clearing drops from attached blocks when they break before the block being harvested");
+
+        netherQuartzHlcCompatibilityPatchEnabled = newEntry(hlc, "NetherQuartzOverrideDrops",
+                "Prevents duplicate Nether Quartz Ore drops with Nether Ores quartz override while keeping Harvest Level Config mining requirements");
 
         comment(fld, "You can disable/enable compatibility patches for Fast Leaf Decay here");
         thaumcraftMagicalLeavesFastDecayPatchEnabled = newEntry(fld, "ThaumcraftMagicalLeaves",

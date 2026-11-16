@@ -39,6 +39,15 @@ public class HarvestLevelConfigTransformer
             "(Lnet/minecraftforge/event/world/"
                     + "BlockEvent$HarvestDropsEvent;)Z";
 
+    private static final String QUARTZ_PATCH_OWNER =
+            "thaumcraft4patched/model/patch/HlcNetherQuartzOverridePatch";
+    private static final String SKIP_QUARTZ_DESCRIPTOR =
+            "(Lnet/minecraftforge/event/world/BlockEvent$BreakEvent;)Z";
+
+    private static final String RESOLVE_QUARTZ_NAME_DESCRIPTOR =
+            "(Ljava/lang/String;Lnet/minecraftforge/event/world/"
+                    + "BlockEvent$HarvestDropsEvent;)Ljava/lang/String;";
+
     @Override
     public byte[] transform(
             String name,
@@ -229,11 +238,89 @@ public class HarvestLevelConfigTransformer
                 guard
         );
 
+        patchQuartzHarvestRule(dropsMethod);
+
+        JumpInsnNode quartzExit = null;
+        int quartzCheckCount = 0;
+
+        for (AbstractInsnNode instruction : breakMethod.instructions.toArray()) {
+            if (!(instruction instanceof MethodInsnNode)) {
+                continue;
+            }
+            MethodInsnNode call = (MethodInsnNode) instruction;
+            if (call.getOpcode() != Opcodes.INVOKEINTERFACE
+                    || !"java/util/Map".equals(call.owner)
+                    || !"containsKey".equals(call.name)
+                    || !"(Ljava/lang/Object;)Z".equals(call.desc)) {
+                continue;
+            }
+            AbstractInsnNode next = nextRealInstruction(call);
+            if (!(next instanceof JumpInsnNode)
+                    || next.getOpcode() != Opcodes.IFEQ) {
+                continue;
+            }
+            JumpInsnNode jump = (JumpInsnNode) next;
+            AbstractInsnNode exit = nextRealInstruction(jump.label);
+            if (exit == null || exit.getOpcode() != Opcodes.RETURN) {
+                continue;
+            }
+            quartzExit = jump;
+            quartzCheckCount++;
+        }
+
+        if (quartzCheckCount != 1) {
+            logger.error("Unexpected Harvest Level Config break handler. "
+                    + "Nether Quartz compatibility guard was not installed.");
+            return basicClass;
+        }
+
+        InsnList quartzGuard = new InsnList();
+        quartzGuard.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        quartzGuard.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+                QUARTZ_PATCH_OWNER, "shouldSkipManualDrops", SKIP_QUARTZ_DESCRIPTOR));
+        quartzGuard.add(new JumpInsnNode(Opcodes.IFNE, quartzExit.label));
+        breakMethod.instructions.insert(quartzExit, quartzGuard);
         logger.info(
                 "Successfully patched Harvest Level Config "
                         + "drop handling!"
         );
 
         return writeClass(classNode);
+    }
+
+    private static void patchQuartzHarvestRule(MethodNode dropsMethod) {
+        MethodInsnNode registryLookup = null;
+        for (AbstractInsnNode instruction : dropsMethod.instructions.toArray()) {
+            if (!(instruction instanceof MethodInsnNode)) {
+                continue;
+            }
+            MethodInsnNode call = (MethodInsnNode) instruction;
+            if (call.getOpcode() != Opcodes.INVOKEVIRTUAL
+                    || !"net/minecraft/util/RegistryNamespaced".equals(call.owner)
+                    || !"(Ljava/lang/Object;)Ljava/lang/String;".equals(call.desc)
+                    || !("getNameForObject".equals(call.name)
+                        || "func_148750_c".equals(call.name))) {
+                continue;
+            }
+            if (registryLookup != null) {
+                logger.error("Found multiple Harvest Level Config block name lookups. "
+                        + "Nether Quartz harvest rule patch was not installed.");
+                return;
+            }
+            registryLookup = call;
+        }
+
+        if (registryLookup == null) {
+            logger.error("Could not find Harvest Level Config block name lookup. "
+                    + "Nether Quartz harvest rule patch was not installed.");
+            return;
+        }
+
+        InsnList resolveName = new InsnList();
+        resolveName.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        resolveName.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+                QUARTZ_PATCH_OWNER, "resolveHarvestBlockName", RESOLVE_QUARTZ_NAME_DESCRIPTOR));
+        dropsMethod.instructions.insert(registryLookup, resolveName);
+        logger.info("Successfully patched Harvest Level Config Nether Quartz harvest validation.");
     }
 }
