@@ -17,7 +17,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
   - Sign editor. Fixes the pink or missing sign texture caused by cached rendering.
 
 - **Ender Zoo**
-  - Dire Slime check. Recognises active Excavation Focus magic on dirt and grass when the Harvest Level Config integration is active.
+  - Dire Slime check. Recognizes active Excavation Focus magic on dirt and grass when the Harvest Level Config integration is active.
 
 - **Fast Leaf Decay**
   - Greatwood and Silverwood. Both leaf types follow the configured decay speed.
@@ -31,8 +31,9 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
 
 - **Harvest Level Config**
   - Excavation Focus. Active magic counts as a diamond-tier pickaxe, axe, and shovel.
-  - Harvest Level Config - Primal Crusher. Counts as a level-5 pickaxe and shovel.
+  - Primal Crusher. Counts as a level-5 pickaxe and shovel.
   - Attached block drops. Preserves drops from attached blocks that break before the block you're mining.
+  - Nether Quartz Ore. Prevents duplicate Nether Quartz Ore drops with Nether Ores mod override while keeping HLC mining requirements
 
 - **Magic Cookies**
   - Dark Shrine fog. Fixes the opaque screen on newer Java versions and adds fog intensity and distance settings.
@@ -43,7 +44,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
   - Command rollback. Prevents a crash when switching between singleplayer and multiplayer.
 
 - **Special AI**
-  - Shambling Husks. Stops Special AI from adding its extra behaviours to them.
+  - Shambling Husks. Stops Special AI from adding its extra behaviors to them.
 
 - **Thaumcraft 4**
   - Bone Bow research. Appears after you discover Telum.
@@ -71,7 +72,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
   - Alchemite. Sends Alchemite explosions through Forge's detonation event so claim mods can protect blocks.
 
 - **Thaumic Tinkerer**
-  - Elemental fires. All six can tick and transmute neighbouring blocks with doFireTick off.
+  - Elemental fires. All six can tick and transmute neighboring blocks with doFireTick off.
 
 - **Witchery**
   - Raise Land. Prevents the brew from moving or duplicating bedrock.
