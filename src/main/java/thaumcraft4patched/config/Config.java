@@ -17,6 +17,7 @@ public class Config extends AConfig {
     public static boolean netherQuartzHlcCompatibilityPatchEnabled;
     public static boolean fldEnabled, thaumcraftMagicalLeavesFastDecayPatchEnabled, taintedMagicWarpwoodLeavesFastDecayPatchEnabled;
     public static boolean tcclmEnabled, thaumaturgeWitcheryGuardNonAggressionPatchEnabled;
+    public static boolean hideVengefulGolemAggroMessage;
     public static boolean tc4Enabled, boneBowResearchPatchEnabled,
             golemLumberCoreWoodHardnessPatchEnabled, nullResearchParentsPatchEnabled,
             thaumonomiconRecipeLightingPatchEnabled,
@@ -108,6 +109,8 @@ public class Config extends AConfig {
         comment(tcon, "You can disable/enable compatibility patches for Thaumic Concilium here");
         thaumaturgeWitcheryGuardNonAggressionPatchEnabled = newEntry(tcon, "WitcheryGuardNonAggression",
                 "Stops Thaumic Concilium Thaumaturges and Witchery Village Guards from fighting each other");
+        hideVengefulGolemAggroMessage = newEntry(tcon, "HideVengefulGolemAggroMessage", false,
+                "Hides the Vengeful Golem's combat taunts in chat. Set on the server for multiplayer.");
 
         comment(witchery, "You can disable/enable bug patches for Witchery here");
         witcheryRaiseLandBedrockProtectionPatchEnabled = newEntry(witchery, "RaiseLandBedrockProtection",
