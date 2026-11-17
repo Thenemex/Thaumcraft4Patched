@@ -63,6 +63,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
 - **Thaumic Concilium**
   - Mad Thaumaturges. Prevents them from mounting and riding their attack targets.
   - NPC combat. Stops Thaumaturges and Witchery Village Guards from attacking each other.
+  - Vengeful Golem. Hides the combat taunts in chat + set on the server for multiplayer.
 
 - **Thaumic Exploration**
   - Black Floating Candle. Fixes the crafting crash.
