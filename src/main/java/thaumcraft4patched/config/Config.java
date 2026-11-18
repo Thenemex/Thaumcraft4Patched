@@ -24,6 +24,7 @@ public class Config extends AConfig {
             eldritchRingLakeProtectionPatchEnabled, shamblingHuskItemDropsPatchEnabled;
     public static boolean witcheryEnabled, witcheryRaiseLandBedrockProtectionPatchEnabled;
     public static boolean gravestoneEnabled, deathNoteKeepInventoryPatchEnabled;
+    public static boolean gravestoneHungryNodeProtection;
     public static boolean tbEnabled, missingPrereqs_ThaumiumBracelet, missingPrereqs_VoidBracelet, missingPrereqs_VoidWandCore, entityDeconstructorPlayerCastPatchEnabled;
     public static boolean wgEnabled, missingPrereqs_WitchingWearables;
     public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled,
@@ -120,6 +121,8 @@ public class Config extends AConfig {
         comment(gravestone, "You can disable/enable bug patches for Gravestone here");
         deathNoteKeepInventoryPatchEnabled = newEntry(gravestone, "DeathNoteFollowsConfig",
                 "Makes the death note follow the \"enable_death_note\" entry of Gravestone while the keepInventory game rule is on. Without it the mod gives a note after every death, whatever that entry holds.");
+        gravestoneHungryNodeProtection = newEntry(gravestone, "HungryNodeProtection",
+                "Prevents Thaumcraft Hungry Nodes from breaking Gravestone graves while leaving normal mining unchanged");
 
         comment(tc4, "You can disable/enable bug patches for Thaumcraft 4 here");
         boneBowResearchPatchEnabled = newEntry(tc4,"HiddenBoneBowResearch",
