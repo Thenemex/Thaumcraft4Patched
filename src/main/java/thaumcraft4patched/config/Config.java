@@ -29,6 +29,7 @@ public class Config extends AConfig {
     public static boolean txEnabled, blackFloatingCandleRecipePatchEnabled,
             removeNecroInfusionRecipe, oblivionJarHarvestPatchEnabled;
     public static boolean ttEnabled, elementalFireIgnoresDoFireTickPatchEnabled;
+    public static boolean hideXPTalismanWisp;
     public static boolean thEnabled, alchemiteExplosionClaimProtectionPatchEnabled;
     public static boolean madThaumaturgeMountingPatchEnabled;
     public static boolean fmEnabled, forbiddenMagicImpactClaimProtectionPatchEnabled;
@@ -156,6 +157,8 @@ public class Config extends AConfig {
                 "Adds the missing prereq(s) for the \"Witching Wearables\" research");
 
         comment(tt, "You can disable/enable bug patches for Thaumic Tinkerer here");
+        hideXPTalismanWisp = newEntry(tt, "HideXPTalismanWisp", false,
+                "Hides the green wisp created when the Talisman of Withhold absorbs XP; XP collection and sound remain unchanged");
         elementalFireIgnoresDoFireTickPatchEnabled = newEntry(tt, "ElementalFireIgnoresDoFireTick",
                 "Lets Thaumic Tinkerer's six elemental fires tick and transmute neighbor blocks when the doFireTick game rule is off. Vanilla fire is unchanged.");
 
