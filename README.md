@@ -28,6 +28,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
 
 - **Gravestone**
   - Death notes. Respects enable_death_note when keepInventory is on.
+  - Hungry Nodes. Prevent them from breaking graves.
 
 - **Harvest Level Config**
   - Excavation Focus. Active magic counts as a diamond-tier pickaxe, axe, and shovel.
@@ -74,6 +75,7 @@ An addon for Thaumcraft 4, in Minecraft 1.7.10. Bring bug patches to the mod.
 
 - **Thaumic Tinkerer**
   - Elemental fires. All six can tick and transmute neighboring blocks with doFireTick off.
+  - Talisman of Withhold. Hides the green wisp created when the necklace absorbs XP ; XP collection and sound remain unchanged
 
 - **Witchery**
   - Raise Land. Prevents the brew from moving or duplicating bedrock.
